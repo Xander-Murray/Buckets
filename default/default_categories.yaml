@@ -1,0 +1,81 @@
+- name: Food
+  color: orange_red1
+  nature: NEED
+  subcategories:
+    - name: Groceries
+      nature: MUST
+    - name: Restaurants
+      nature: NEED
+    - name: Takeout
+      nature: WANT
+
+- name: Transport
+  color: grey63
+  nature: MUST
+  subcategories:
+    - name: Fuel
+      nature: NEED
+    - name: Public Transport
+      nature: MUST
+    - name: Ride Share
+      nature: NEED
+
+- name: Housing
+  color: medium_orchid3
+  nature: MUST
+  subcategories:
+    - name: Rent
+      nature: MUST
+    - name: Utilities
+      nature: MUST
+    - name: Furniture
+      nature: NEED
+
+- name: Shopping
+  color: cyan
+  nature: WANT
+  subcategories:
+    - name: Clothing
+      nature: NEED
+    - name: Gifts
+      nature: WANT
+
+- name: Entertainment
+  color: green3
+  nature: WANT
+  subcategories:
+    - name: Movies
+      nature: WANT
+    - name: Travel
+      nature: WANT
+
+- name: Health
+  color: indian_red
+  nature: MUST
+  subcategories:
+    - name: Doctor
+      nature: MUST
+    - name: Medication
+      nature: MUST
+
+- name: Income
+  color: yellow
+  nature: MUST
+  subcategories:
+    - name: Salary
+      nature: MUST
+    - name: Side Income
+      nature: MUST
+
+- name: Savings & Buckets
+  color: steel_blue
+  nature: NEED
+  subcategories:
+    - name: Emergency Fund
+      nature: MUST
+    - name: Vacation
+      nature: WANT
+    - name: New Car
+      nature: NEED
+    - name: Investments
+      nature: MUST
