@@ -34,9 +34,6 @@ class Record(Base):
     accountId = Column(Integer, ForeignKey("account.id"), nullable=False)
     categoryId = Column(Integer, ForeignKey("category.id"), nullable=True)
 
-    tags = Column(String, nullable=True)  # (unused in UI yet)
-    isInProgress = Column(Boolean, nullable=False, default=False)  # (unused in UI)
-
     isIncome = Column(Boolean, nullable=False, default=False)
     isTransfer = Column(
         Boolean,

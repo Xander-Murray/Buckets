@@ -2,7 +2,6 @@ from importlib.metadata import metadata, PackageNotFoundError
 
 from textual import events, log, on
 from textual.app import App as TextualApp, ComposeResult
-from textual.command import CommandPalette
 from textual.containers import Container
 from textual.css.query import NoMatches
 from textual.geometry import Size
@@ -12,7 +11,7 @@ from textual.widgets import Footer, Label, Tab, Tabs
 
 from Buckets.components.jump_overlay import JumpOverlay
 from Buckets.components.jumper import Jumper
-from Buckets.config import CONFIG, write_state
+from Buckets.config import CONFIG
 from Buckets.home import Home
 from Buckets.buckets_page import BucketsPage
 
@@ -122,20 +121,6 @@ class App(TextualApp):
 
         self.clear_notifications()
         self.push_screen(JumpOverlay(self.jumper), callback=handle_jump_target)
-
-    @on(CommandPalette.Opened)
-    def palette_opened(self) -> None:
-        pass
-
-    @on(CommandPalette.OptionHighlighted)
-    def palette_option_highlighted(
-        self, event: CommandPalette.OptionHighlighted
-    ) -> None:
-        _ = event
-
-    @on(CommandPalette.Closed)
-    def palette_closed(self, event: CommandPalette.Closed) -> None:
-        _ = event
 
     # ----- Tabs / layout -----
     async def on_tabs_tab_activated(self, event: Tabs.TabActivated) -> None:

@@ -123,13 +123,3 @@ def init_db():
     _create_default_categories(session)
     _fix_dangling_categories(session)
     session.close()
-
-
-def wipe_database():
-    Base.metadata.drop_all(db_engine)
-    _sync_database_schema()
-    Base.metadata.create_all(db_engine)
-    session = Session()
-    _create_outside_source_account(session)
-    _create_default_categories(session)
-    session.close()
