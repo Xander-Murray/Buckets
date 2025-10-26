@@ -15,6 +15,7 @@ from sqlalchemy.orm import relationship, validates
 from Buckets.config import CONFIG
 from .database.db import Base
 
+
 class Record(Base):
     __tablename__ = "record"
 
@@ -33,6 +34,7 @@ class Record(Base):
     accountId = Column(Integer, ForeignKey("account.id"), nullable=False)
     categoryId = Column(Integer, ForeignKey("category.id"), nullable=True)
 
+    bucketId = Column(Integer, ForeignKey("bucket.id"), nullable=True)
     isIncome = Column(Boolean, nullable=False, default=False)
     isTransfer = Column(
         Boolean,
@@ -52,6 +54,8 @@ class Record(Base):
         back_populates="transferFromRecords",
         foreign_keys=[transferToAccountId],
     )
+    isInProgress = Column(Boolean, nullable=False, default=False)
+
     category = relationship("Category", back_populates="records")
 
     @validates("amount")
