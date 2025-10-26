@@ -1,7 +1,6 @@
 from Buckets.managers.accounts import get_account_by_id
 from Buckets.forms.form import Form, FormField
 
-
 # blueprint (never mutated)
 _ACCOUNT_FORM = Form(
     fields=[
@@ -28,7 +27,6 @@ _ACCOUNT_FORM = Form(
         ),
     ]
 )
-
 
 class AccountForm:
     """Stateless factory wrapper to match existing call sites."""

@@ -14,7 +14,6 @@ from Buckets.managers.buckets import (
     transfer_between_buckets,
 )
 
-
 class BucketsModule(Static):
     """Buckets CRUD + transfer list for the currently selected account (from page_parent.mode)."""
 

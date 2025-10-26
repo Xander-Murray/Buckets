@@ -13,7 +13,6 @@ from Buckets.config import CONFIG
 if TYPE_CHECKING:
     from Buckets.components.jumper import Jumper
 
-
 class JumpOverlay(ModalScreen[str | Widget | None]):
     DEFAULT_CSS = """\
     JumpOverlay {

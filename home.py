@@ -15,7 +15,6 @@ from Buckets.config import CONFIG
 from Buckets.managers.accounts import get_all_accounts
 from Buckets.utils.format import format_period_to_readable
 
-
 class Home(Static):
     filter = {
         "offset": 0,

@@ -7,12 +7,10 @@ from Buckets.config import CONFIG
 from Buckets.models.bucket import Bucket
 from Buckets.models.database.app import Session
 
-
 class BucketTransferError(Exception):
     """Raised when a bucket-to-bucket transfer is invalid."""
 
     pass
-
 
 def create_bucket(data: dict) -> Bucket:
     """
@@ -37,7 +35,6 @@ def create_bucket(data: dict) -> Bucket:
         s.expunge(bucket)
         return bucket
 
-
 def get_bucket_by_id(bucket_id: int) -> Optional[Bucket]:
     with Session() as s:
         bucket = s.get(Bucket, int(bucket_id))
@@ -45,7 +42,6 @@ def get_bucket_by_id(bucket_id: int) -> Optional[Bucket]:
             s.expunge(bucket)
             return bucket
         return None
-
 
 def get_buckets_by_account(
     account_id: int, include_deleted: bool = False
@@ -59,7 +55,6 @@ def get_buckets_by_account(
             s.expunge(b)
         return buckets
 
-
 def get_all_buckets(include_deleted: bool = False) -> list[Bucket]:
     with Session() as s:
         q = s.query(Bucket)
@@ -69,7 +64,6 @@ def get_all_buckets(include_deleted: bool = False) -> list[Bucket]:
         for b in buckets:
             s.expunge(b)
         return buckets
-
 
 def update_bucket(bucket_id: int, data: dict) -> Optional[Bucket]:
     """
@@ -94,7 +88,6 @@ def update_bucket(bucket_id: int, data: dict) -> Optional[Bucket]:
         s.expunge(bucket)
         return bucket
 
-
 def delete_bucket(bucket_id: int) -> bool:
     with Session() as s:
         bucket = s.get(Bucket, int(bucket_id))
@@ -103,7 +96,6 @@ def delete_bucket(bucket_id: int) -> bool:
         bucket.deletedAt = datetime.now()
         s.commit()
         return True
-
 
 def transfer_between_buckets(
     from_bucket_id: int, to_bucket_id: int, amount: float

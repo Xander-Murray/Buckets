@@ -4,7 +4,6 @@ from sqlalchemy import Column, DateTime, Integer, String, Enum as SQLEnum, Forei
 from sqlalchemy.orm import relationship
 from .database.db import Base
 
-
 class Nature(Enum):
     WANT = "Want"
     NEED = "Need"
@@ -12,7 +11,6 @@ class Nature(Enum):
 
     def __str__(self) -> str:
         return self.value
-
 
 class Category(Base):
     __tablename__ = "category"

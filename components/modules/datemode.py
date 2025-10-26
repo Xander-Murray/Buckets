@@ -10,7 +10,6 @@ from Buckets.forms.form import Form, FormField
 from Buckets.modals.input import InputModal
 from Buckets.config import CONFIG
 
-
 class DateMode(Static):
     can_focus = True
 

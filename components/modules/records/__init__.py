@@ -13,7 +13,6 @@ from Buckets.components.modules.records._cud import RecordCUD
 from Buckets.components.modules.records._table_builder import RecordTableBuilder
 from Buckets.config import CONFIG
 
-
 class Records(RecordCUD, RecordTableBuilder, Static):
     """Records table (date view only) with add/edit/delete/transfer; no filters."""
 

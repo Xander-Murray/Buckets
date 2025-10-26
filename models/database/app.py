@@ -17,7 +17,6 @@ DB_PATH = Path("buckets.db").resolve()
 db_engine = create_engine(f"sqlite:///{DB_PATH}", echo=False, future=True)
 Session = sessionmaker(bind=db_engine)
 
-
 def _create_outside_source_account(session):
     outside = session.query(Account).filter_by(name="Outside source").first()
     if not outside:
@@ -29,7 +28,6 @@ def _create_outside_source_account(session):
         )
         session.add(outside)
         session.commit()
-
 
 def _create_default_categories(session):
     if session.query(Category).count() > 0:
@@ -62,7 +60,6 @@ def _create_default_categories(session):
             session.add(child)
             session.commit()
 
-
 def _fix_dangling_categories(session):
     dangling_subcategories = (
         session.query(Category)
@@ -79,7 +76,6 @@ def _fix_dangling_categories(session):
         subcategory.deletedAt = datetime.now()
         session.add(subcategory)
     session.commit()
-
 
 def _sync_database_schema():
     try:
@@ -113,7 +109,6 @@ def _sync_database_schema():
                         )
     except Exception as e:
         raise Exception(f"Failed to sync database schema: {str(e)}")
-
 
 def init_db():
     _sync_database_schema()

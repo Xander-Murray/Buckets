@@ -6,7 +6,6 @@ from Buckets.config import CONFIG
 from Buckets.managers.categories import get_all_categories_records
 from Buckets.managers.utils import get_period_average, get_period_figures
 
-
 class Insights(Static):
     can_focus = True
 

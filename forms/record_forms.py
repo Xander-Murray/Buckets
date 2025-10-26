@@ -73,7 +73,6 @@ _RECORD_FORM = Form(
     ]
 )
 
-
 class RecordForm:
     """Stateless; options are populated per call."""
 

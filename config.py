@@ -11,15 +11,12 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, Field, ValidationError
 
-
 def config_file() -> Path:
     """Return the path to the local config.yaml file."""
     project_root = Path(__file__).resolve().parent.parent  # points to Buckets/
     return project_root / "config.yaml"
 
-
 # ---------- Defaults & basic config blocks ----------
-
 
 class Defaults(BaseModel):
     period: Literal["day", "week", "month", "year"] = "week"
@@ -28,10 +25,8 @@ class Defaults(BaseModel):
     round_decimals: int = 2
     plot_marker: Literal["braille", "fhd", "hd", "dot"] = "braille"
 
-
 class DatemodeHotkeys(BaseModel):
     go_to_day: str = "g"
-
 
 class HomeHotkeys(BaseModel):
     # kept
@@ -47,15 +42,12 @@ class HomeHotkeys(BaseModel):
     toggle_use_account: str = "\\"
     datemode: DatemodeHotkeys = DatemodeHotkeys()
 
-
 class RecordModalHotkeys(BaseModel):
     submit_and_template: str = "ctrl+t"
-
 
 class CategoriesHotkeys(BaseModel):
     new_subcategory: str = "s"
     browse_defaults: str = "b"
-
 
 class Hotkeys(BaseModel):
     new: str = "a"
@@ -67,7 +59,6 @@ class Hotkeys(BaseModel):
     record_modal: RecordModalHotkeys = RecordModalHotkeys()
     categories: CategoriesHotkeys = CategoriesHotkeys()
 
-
 class Symbols(BaseModel):
     line_char: str = "│"
     finish_line_char: str = "╰"
@@ -75,12 +66,10 @@ class Symbols(BaseModel):
     amount_positive: str = "+"
     amount_negative: str = "-"
 
-
 class State(BaseModel):
     theme: str = "tokyo-night"
     check_for_updates: bool = True
     footer_visibility: bool = True
-
 
 class Config(BaseModel):
     hotkeys: Hotkeys = Hotkeys()
@@ -156,15 +145,12 @@ class Config(BaseModel):
             hotkeys=Hotkeys(), symbols=Symbols(), defaults=Defaults(), state=State()
         )
 
-
 class ConfigurationError(Exception):
     """Custom exception for configuration errors"""
 
     pass
 
-
 CONFIG: Config | None = None
-
 
 def open_config_file() -> None:
     """Open the config file with the default application."""
@@ -175,7 +161,6 @@ def open_config_file() -> None:
         os.startfile(path)  # type: ignore[attr-defined]
     else:
         subprocess.run(["xdg-open", path])
-
 
 def load_config() -> None:
     path = config_file()
@@ -211,7 +196,6 @@ def load_config() -> None:
         except KeyboardInterrupt:
             print("\nExiting...")
         raise SystemExit(1)
-
 
 def write_state(key: str, value: Any) -> None:
     """Write a nested state value to config.yaml using dot notation (e.g., 'theme' or 'foo.bar.baz')."""

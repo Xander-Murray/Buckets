@@ -50,7 +50,6 @@ _CATEGORY_FORM = Form(
     ]
 )
 
-
 class CategoryForm:
     def get_form(self) -> Form:
         return _CATEGORY_FORM.clone()

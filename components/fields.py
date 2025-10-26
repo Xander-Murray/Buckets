@@ -14,7 +14,6 @@ _RESTRICT_TYPES = {
     "number": r"^-?\d*\.?\d*(?:[+\-*\/]-?\d*\.?\d+)*[+\-*\/\.]?$",
 }
 
-
 class Fields(Static):
     """Container for multiple form fields"""
 
@@ -25,7 +24,6 @@ class Fields(Static):
     def compose(self) -> ComposeResult:
         for field in self.form.fields:
             yield Field(field)
-
 
 class Field(Static):
     """Individual form field that can be text, number, boolean, or autocomplete"""

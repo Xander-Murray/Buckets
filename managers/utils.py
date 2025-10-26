@@ -16,7 +16,6 @@ Session = sessionmaker(bind=db_engine)
 
 # ---------------- UI helper ---------------- #
 
-
 def try_method_query_one(widget: Widget, query: str, method: str, params) -> None:
     """Safely find a descendant widget and call a method on it (ignore errors)."""
     try:
@@ -25,15 +24,12 @@ def try_method_query_one(widget: Widget, query: str, method: str, params) -> Non
     except Exception:
         return
 
-
 # ------------- period helpers -------------- #
-
 
 def _get_start_end_of_year(offset: int = 0) -> tuple[datetime, datetime]:
     now = datetime.now()
     y = now.year + offset
     return datetime(y, 1, 1, 0, 0, 0), datetime(y, 12, 31, 23, 59, 59)
-
 
 def _get_start_end_of_month(offset: int = 0) -> tuple[datetime, datetime]:
     now = datetime.now()
@@ -49,7 +45,6 @@ def _get_start_end_of_month(offset: int = 0) -> tuple[datetime, datetime]:
     end = datetime(next_year, next_month, 1, 0, 0, 0) - timedelta(seconds=1)
     return start, end
 
-
 def _get_start_end_of_week(offset: int = 0) -> tuple[datetime, datetime]:
     now = datetime.now() + timedelta(weeks=offset)
     fdow = CONFIG.defaults.first_day_of_week
@@ -59,14 +54,12 @@ def _get_start_end_of_week(offset: int = 0) -> tuple[datetime, datetime]:
     end = (start + timedelta(days=6)).replace(hour=23, minute=59, second=59)
     return start, end
 
-
 def _get_start_end_of_day(offset: int = 0) -> tuple[datetime, datetime]:
     now = datetime.now() + timedelta(days=offset)
     return (
         now.replace(hour=0, minute=0, second=0, microsecond=0),
         now.replace(hour=23, minute=59, second=59),
     )
-
 
 def get_start_end_of_period(
     offset: int = 0, offset_type: str = "month"
@@ -79,7 +72,6 @@ def get_start_end_of_period(
         return _get_start_end_of_day(offset)
     # default month
     return _get_start_end_of_month(offset)
-
 
 def get_period_figures(
     accountId: int | None = None,
@@ -121,14 +113,11 @@ def get_period_figures(
         if own_session:
             session.close()
 
-
 # ----------------- averages ----------------- #
-
 
 def _get_days_in_period(offset: int = 0, offset_type: str = "month") -> int:
     start, end = get_start_end_of_period(offset, offset_type)
     return max(1, (end - start).days + 1)
-
 
 def get_period_average(
     net: float = 0.0, offset: int = 0, offset_type: str = "month"
@@ -136,9 +125,7 @@ def get_period_average(
     days = _get_days_in_period(offset, offset_type)
     return round(net / days, CONFIG.defaults.round_decimals)
 
-
 # ------------ filter parsing helper ------------ #
-
 
 def get_operator_amount(
     operator_amount: str | None = None,

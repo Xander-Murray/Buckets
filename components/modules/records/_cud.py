@@ -15,7 +15,6 @@ from Buckets.modals.confirmation import ConfirmationModal
 from Buckets.modals.record import RecordModal
 from Buckets.modals.transfer import TransferModal
 
-
 class RecordCUD:
     """Create / Update / Delete actions for Records (no people, no splits)."""
 

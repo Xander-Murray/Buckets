@@ -6,7 +6,6 @@ from Buckets.models.record_template import RecordTemplate
 
 Session = sessionmaker(bind=db_engine)
 
-
 # region c
 def create_template(data):
     session = Session()
@@ -20,14 +19,12 @@ def create_template(data):
     finally:
         session.close()
 
-
 def create_template_from_record(record):
     data = {}
     for x in ["label", "amount", "accountId", "categoryId", "isIncome"]:
         data[x] = record[x]
 
     return create_template(data)
-
 
 # region r
 def get_all_templates():
@@ -45,7 +42,6 @@ def get_all_templates():
     finally:
         session.close()
 
-
 def get_record_templates():
     session = Session()
     try:
@@ -62,7 +58,6 @@ def get_record_templates():
     finally:
         session.close()
 
-
 def get_transfer_templates():
     session = Session()
     try:
@@ -78,7 +73,6 @@ def get_transfer_templates():
         return session.scalars(stmt).all()
     finally:
         session.close()
-
 
 def get_template_by_id(recordtemplate_id) -> RecordTemplate:
     session = Session()
@@ -97,7 +91,6 @@ def get_template_by_id(recordtemplate_id) -> RecordTemplate:
         )
     finally:
         session.close()
-
 
 def get_adjacent_template(recordtemplate_id, direction):
     session = Session()
@@ -123,7 +116,6 @@ def get_adjacent_template(recordtemplate_id, direction):
     finally:
         session.close()
 
-
 # region u
 def update_template(recordtemplate_id, data):
     session = Session()
@@ -138,7 +130,6 @@ def update_template(recordtemplate_id, data):
         return recordtemplate
     finally:
         session.close()
-
 
 def swap_template_order(recordtemplate_id, direction="next"):
     session = Session()
@@ -173,7 +164,6 @@ def swap_template_order(recordtemplate_id, direction="next"):
         return recordtemplate
     finally:
         session.close()
-
 
 # region d
 def delete_template(recordtemplate_id):

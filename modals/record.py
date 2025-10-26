@@ -14,7 +14,6 @@ from Buckets.modals.base_widget import ModalContainer
 from Buckets.modals.input import InputModal
 from Buckets.utils.validation import validateForm
 
-
 class RecordModal(InputModal):
     """Modal for creating/editing a record (no people/splits)."""
 

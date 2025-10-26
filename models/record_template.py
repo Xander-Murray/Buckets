@@ -18,7 +18,6 @@ from sqlalchemy.orm import relationship, validates
 from Buckets.config import CONFIG
 from .database.db import Base
 
-
 class RecordTemplate(Base):
     __tablename__ = "record_template"
 
@@ -71,7 +70,6 @@ class RecordTemplate(Base):
         if value is not None:
             return round(value, CONFIG.defaults.round_decimals)
         return value
-
 
 @event.listens_for(RecordTemplate, "before_insert")
 def receive_before_insert(mapper, connection, target):

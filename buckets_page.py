@@ -9,7 +9,6 @@ from Buckets.components.modules.categories import Categories
 from Buckets.components.modules.buckets import BucketsModule
 from Buckets.managers.accounts import get_all_accounts
 
-
 class BucketsPage(Static):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs, id="buckets-page")

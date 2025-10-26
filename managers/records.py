@@ -13,9 +13,7 @@ from Buckets.models.bucket import Bucket
 
 Session = sessionmaker(bind=db_engine)
 
-
 # ------------------------- Create ------------------------- #
-
 
 def create_record(record_data: dict) -> Record:
     if record_data.get("isIncome"):
@@ -47,9 +45,7 @@ def create_record(record_data: dict) -> Record:
     finally:
         session.close()
 
-
 # -------------------------- Read -------------------------- #
-
 
 def get_record_by_id(record_id: int) -> Record | None:
     """Fetch a single record with category/account relations (no splits)."""
@@ -67,7 +63,6 @@ def get_record_by_id(record_id: int) -> Record | None:
         return record
     finally:
         session.close()
-
 
 def get_records(
     offset: int = 0,
@@ -94,9 +89,7 @@ def get_records(
     finally:
         session.close()
 
-
 # --------------------- Spending helpers ------------------- #
-
 
 def _collect_expense_records(
     session, start_date: datetime, end_date: datetime
@@ -112,7 +105,6 @@ def _collect_expense_records(
         )
         .all()
     )
-
 
 def _daily_sums(
     records: list[Record], start_date: datetime, end_date: datetime, cumulative: bool
@@ -140,7 +132,6 @@ def _daily_sums(
         cur += timedelta(days=1)
     return out
 
-
 def get_spending(start_date: datetime, end_date: datetime) -> list[float]:
     """Daily expense totals (no splits), excluding transfers."""
     session = Session()
@@ -149,7 +140,6 @@ def get_spending(start_date: datetime, end_date: datetime) -> list[float]:
         return _daily_sums(recs, start_date, end_date, cumulative=False)
     finally:
         session.close()
-
 
 def get_spending_trend(start_date: datetime, end_date: datetime) -> list[float]:
     """Cumulative expense totals (no splits), excluding transfers."""
@@ -160,9 +150,7 @@ def get_spending_trend(start_date: datetime, end_date: datetime) -> list[float]:
     finally:
         session.close()
 
-
 # --------------------- Balance timeline ------------------- #
-
 
 def get_daily_balance(start_date: datetime, end_date: datetime) -> list[float]:
     """
@@ -210,9 +198,7 @@ def get_daily_balance(start_date: datetime, end_date: datetime) -> list[float]:
     finally:
         session.close()
 
-
 # ------------------------- Update ------------------------- #
-
 
 def update_record(record_id: int, updated_data: dict) -> Record | None:
     session = Session()
@@ -232,9 +218,7 @@ def update_record(record_id: int, updated_data: dict) -> Record | None:
     finally:
         session.close()
 
-
 # ------------------------- Delete ------------------------- #
-
 
 def delete_record(record_id: int) -> Record | None:
     session = Session()

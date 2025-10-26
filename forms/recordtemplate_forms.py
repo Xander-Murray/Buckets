@@ -47,7 +47,6 @@ _RECORD_TEMPLATE_FORM = Form(
     ]
 )
 
-
 class RecordTemplateForm:
     def _account_options(self) -> Options:
         accounts = get_all_accounts_with_balance()

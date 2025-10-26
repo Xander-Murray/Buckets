@@ -15,12 +15,10 @@ from Buckets.config import CONFIG
 from Buckets.home import Home
 from Buckets.buckets_page import BucketsPage
 
-
 PAGES = [
     {"name": "Home", "class": Home},
     {"name": "Buckets", "class": BucketsPage},
 ]
-
 
 class App(TextualApp):
     CSS_PATH = [

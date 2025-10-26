@@ -3,7 +3,6 @@ from sqlalchemy import Column, DateTime, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from .database.db import Base
 
-
 class Bucket(Base):
     __tablename__ = "bucket"
 

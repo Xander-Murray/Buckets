@@ -11,7 +11,6 @@ from Buckets.models.record import Record
 
 Session = sessionmaker(bind=db_engine)
 
-
 # region Get
 def get_categories_count() -> int:
     """Count all categories excluding deleted ones."""
@@ -21,7 +20,6 @@ def get_categories_count() -> int:
         return len(session.scalars(stmt).all())
     finally:
         session.close()
-
 
 def get_all_categories_tree() -> list[tuple[Category, Text, int]]:
     """Retrieve all categories in a hierarchical tree format."""
@@ -59,7 +57,6 @@ def get_all_categories_tree() -> list[tuple[Category, Text, int]]:
     finally:
         session.close()
 
-
 def get_all_categories_by_freq():
     """Retrieve all categories ordered by the frequency of their usage in records."""
     session = Session()
@@ -76,7 +73,6 @@ def get_all_categories_by_freq():
     finally:
         session.close()
 
-
 def get_category_by_id(category_id: int) -> Category | None:
     """Retrieve a category by its ID."""
     session = Session()
@@ -90,7 +86,6 @@ def get_category_by_id(category_id: int) -> Category | None:
         return session.scalars(stmt).first()
     finally:
         session.close()
-
 
 def get_all_categories_records(
     offset: int = 0,
@@ -162,7 +157,6 @@ def get_all_categories_records(
     finally:
         session.close()
 
-
 # region Create
 def create_category(data: dict) -> Category:
     """Create a new category."""
@@ -176,7 +170,6 @@ def create_category(data: dict) -> Category:
         return new_category
     finally:
         session.close()
-
 
 # region Update
 def update_category(category_id: int, data: dict) -> Category | None:
@@ -193,7 +186,6 @@ def update_category(category_id: int, data: dict) -> Category | None:
         return category
     finally:
         session.close()
-
 
 # region Delete
 def delete_category(category_id: int) -> bool:

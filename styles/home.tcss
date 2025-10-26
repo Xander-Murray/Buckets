@@ -12,4 +12,3 @@
 #col-middle { grid-columns: 2; grid-rows: 1; row-span: 4; }
 #col-right  { grid-columns: 3; grid-rows: 1; row-span: 4; }
 
-

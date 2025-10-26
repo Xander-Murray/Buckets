@@ -10,7 +10,6 @@ from Buckets.models.database.app import Session
 from Buckets.models.account import Account
 from Buckets.models.record import Record
 
-
 def create_account(data: dict) -> Account:
     """Create an account from a dict of fields."""
     session = Session()
@@ -24,7 +23,6 @@ def create_account(data: dict) -> Account:
     finally:
         session.close()
 
-
 def _get_base_accounts_query(get_hidden: bool = False):
     stmt = select(Account).filter(Account.deletedAt.is_(None))
     if not get_hidden:
@@ -33,7 +31,6 @@ def _get_base_accounts_query(get_hidden: bool = False):
         stmt = stmt.order_by(Account.hidden.asc(), Account.id.asc())
     return stmt
 
-
 def get_all_accounts(get_hidden: bool = False) -> List[Account]:
     session = Session()
     try:
@@ -41,7 +38,6 @@ def get_all_accounts(get_hidden: bool = False) -> List[Account]:
         return session.scalars(stmt).all()
     finally:
         session.close()
-
 
 def get_accounts_count(get_hidden: bool = False) -> int:
     session = Session()
@@ -53,14 +49,12 @@ def get_accounts_count(get_hidden: bool = False) -> int:
     finally:
         session.close()
 
-
 def get_account_by_id(account_id: int) -> Optional[Account]:
     session = Session()
     try:
         return session.get(Account, account_id)
     finally:
         session.close()
-
 
 def get_all_accounts_with_balance(get_hidden: bool = False) -> List[Account]:
     """Return accounts list where each item also has a transient `.balance` attr."""
@@ -74,14 +68,12 @@ def get_all_accounts_with_balance(get_hidden: bool = False) -> List[Account]:
     finally:
         session.close()
 
-
 def get_account_balance_by_id(account_id: int) -> float:
     session = Session()
     try:
         return get_account_balance(account_id, session)
     finally:
         session.close()
-
 
 def get_account_balance(account_id: int, session: Optional[Session] = None) -> float:
     own_session = False
@@ -121,7 +113,6 @@ def get_account_balance(account_id: int, session: Optional[Session] = None) -> f
         if own_session:
             session.close()
 
-
 def update_account(account_id: int, data: dict) -> Optional[Account]:
     """Update fields on an account. Returns updated Account or None."""
     session = Session()
@@ -139,7 +130,6 @@ def update_account(account_id: int, data: dict) -> Optional[Account]:
     finally:
         session.close()
 
-
 def toggle_account_hidden(
     account_id: int, hidden: Optional[bool] = None
 ) -> Optional[Account]:
@@ -156,7 +146,6 @@ def toggle_account_hidden(
         return acc
     finally:
         session.close()
-
 
 def delete_account(account_id: int) -> bool:
     """Soft-delete account by setting deletedAt."""

@@ -14,7 +14,6 @@ from textual.message import Message
 from textual.widget import Widget
 from textual.widgets import Input
 
-
 class DropdownRender:
     def __init__(
         self,
@@ -83,7 +82,6 @@ class DropdownRender:
 
         yield table
 
-
 @dataclass
 class DropdownItem:
     """A single option appearing in the autocompletion dropdown. Each option has up to 3 columns.
@@ -122,12 +120,10 @@ class DropdownItem:
         if isinstance(self.right_meta, str):
             self.right_meta = Text(self.right_meta)
 
-
 @dataclass
 class InputState:
     value: str
     cursor_position: int
-
 
 class AutoComplete(Widget):
     def __init__(
@@ -262,7 +258,6 @@ class AutoComplete(Widget):
             super().__init__()
             self.item = item
             self.input = input
-
 
 class Dropdown(Widget):
     DEFAULT_CSS = """\
@@ -495,7 +490,6 @@ Dropdown .autocomplete--right-column {
             bottom,
             cursor_screen_position,
         )
-
 
 class DropdownChild(Widget):
     """An autocompletion dropdown widget. This widget gets linked to an Input widget, and is automatically

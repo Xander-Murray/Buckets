@@ -5,13 +5,11 @@ from textual.geometry import Offset
 from textual.screen import Screen
 from textual.widget import Widget
 
-
 @runtime_checkable
 class Jumpable(Protocol):
     """A widget which we can jump focus to."""
 
     jump_key: str
-
 
 class JumpInfo(NamedTuple):
     """Information returned by the jumper for each jump target."""
@@ -21,7 +19,6 @@ class JumpInfo(NamedTuple):
 
     widget: str | Widget
     """Either the ID or a direct reference to the widget."""
-
 
 class Jumper:
     """An Amp-like jumping mechanism for quick spatial navigation"""

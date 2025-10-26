@@ -8,7 +8,6 @@ from Buckets.modals.base_widget import ModalContainer
 from Buckets.forms.form import Form
 from Buckets.utils.validation import validateForm
 
-
 class InputModal(ModalScreen):
     def __init__(self, title: str, form: Form, *args, **kwargs):
         super().__init__(classes="modal-screen", *args, **kwargs)

@@ -10,7 +10,6 @@ from Buckets.config import CONFIG
 from Buckets.managers.records import get_records
 from Buckets.utils.format import format_date_to_readable
 
-
 class RecordTableBuilder:
     """
     Builds the Records table (date-based view only).

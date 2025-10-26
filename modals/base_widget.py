@@ -4,7 +4,6 @@ from textual.app import ComposeResult
 from textual.containers import Container, ScrollableContainer, Horizontal
 from textual.widgets import Footer, Static, Button
 
-
 class ModalContainer(ScrollableContainer):
     """Minimal modal wrapper: content scrolls, close button on top, footer on bottom."""
 

@@ -32,7 +32,6 @@ _BUCKET_BASE = Form(
     ]
 )
 
-
 class BucketForm:
     """Stateless: options populated per-call."""
 
@@ -80,7 +79,6 @@ class BucketForm:
                 val = getattr(b, field.key)
                 field.default_value = "" if val is None else str(val)
         return f
-
 
 class BucketTransferForm:
     """Transfer funds between buckets within the selected account."""

@@ -15,7 +15,6 @@ from sqlalchemy.orm import relationship, validates
 from Buckets.config import CONFIG
 from .database.db import Base
 
-
 class Record(Base):
     __tablename__ = "record"
 

@@ -13,7 +13,6 @@ from sqlalchemy.orm import relationship
 
 from .database.db import Base
 
-
 class Account(Base):
     __tablename__ = "account"
 

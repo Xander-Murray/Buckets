@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from Buckets.config import CONFIG
 
-
 def parse_formula_expression(value: str) -> float:
     try:
         value = value.replace("+-", "-")
@@ -13,7 +12,6 @@ def parse_formula_expression(value: str) -> float:
         return round(float(eval(value)), CONFIG.defaults.round_decimals)  # nosec
     except Exception:
         return 0.0
-
 
 def format_date_to_readable(date) -> str:
     today = datetime.now().date()
@@ -30,7 +28,6 @@ def format_date_to_readable(date) -> str:
     if start_of_week <= date <= end_of_week:
         return date.strftime("%A")
     return date.strftime(CONFIG.defaults.date_format)
-
 
 def format_period_to_readable(filter: dict) -> str:
     """

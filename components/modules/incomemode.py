@@ -4,7 +4,6 @@ from textual.widgets import Static
 from textual.widgets import Button
 from Buckets.config import CONFIG
 
-
 class IncomeMode(Static):
     def __init__(self, parent: Static, *args, **kwargs) -> None:
         super().__init__(

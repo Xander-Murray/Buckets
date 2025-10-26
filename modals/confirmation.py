@@ -6,7 +6,6 @@ from textual.widgets import (
     Label,
 )
 
-
 class ConfirmationModal(ModalScreen):
     def __init__(self, message: str, *args, **kwargs):
         super().__init__(id="confirmation-modal-screen", *args, **kwargs)

@@ -16,7 +16,6 @@ from Buckets.managers.categories import (
 from Buckets.modals.confirmation import ConfirmationModal
 from Buckets.modals.input import InputModal
 
-
 class Categories(Static):
     can_focus = True
     COLUMNS = ("", "Name", "Nature")

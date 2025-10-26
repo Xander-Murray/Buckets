@@ -49,7 +49,6 @@ _TRANSFER_TEMPLATE_FORM = Form(
     ]
 )
 
-
 class TransferForm:
     def __init__(self, isTemplate: bool = False, defaultDate: str | None = None):
         self.isTemplate = isTemplate

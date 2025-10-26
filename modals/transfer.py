@@ -19,7 +19,6 @@ from Buckets.managers.record_templates import get_template_by_id
 from Buckets.modals.base_widget import ModalContainer
 from Buckets.utils.validation import validateForm
 
-
 class Accounts(ListView):
     def __init__(self, accounts, initial_id: int = 0, type: str = "", *args, **kwargs):
         initial_index = accounts.index(
@@ -48,7 +47,6 @@ class Accounts(ListView):
             *args,
             **kwargs,
         )
-
 
 class TransferModal(ModalScreen):
     def __init__(

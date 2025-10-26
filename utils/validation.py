@@ -7,7 +7,6 @@ from textual.widget import Widget
 
 from Buckets.utils.format import parse_formula_expression
 
-
 def _validate_number(
     value: str, field, is_float: bool = False
 ) -> Tuple[bool, str | None, Any]:
@@ -32,7 +31,6 @@ def _validate_number(
 
     return True, None, num_val
 
-
 def _validate_date(
     value: str, field, auto_day: bool = False
 ) -> Tuple[datetime | None, str | None]:
@@ -55,7 +53,6 @@ def _validate_date(
             if auto_day
             else "Must be in dd mm yy format"
         )
-
 
 def _validate_autocomplete(
     value: str, held_value: str, field
@@ -86,7 +83,6 @@ def _validate_autocomplete(
             if held_value in [str(item.value) for item in items]
             else (False, "Invalid selection")
         )
-
 
 def validateForm(
     formComponent: Widget, formData

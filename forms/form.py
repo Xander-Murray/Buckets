@@ -2,7 +2,6 @@ from typing import Any, List, Literal
 from pydantic import BaseModel, Field
 from rich.console import RenderableType
 
-
 class Option(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
     text: str | None = None
@@ -10,13 +9,11 @@ class Option(BaseModel):
     prefix: RenderableType | None = None
     postfix: RenderableType | None = None
 
-
 class Options(BaseModel):
     items: List[Option] = Field(default_factory=list)
 
     def __len__(self):
         return len(self.items)
-
 
 class FormField(BaseModel):
     placeholder: str | None = None
@@ -40,7 +37,6 @@ class FormField(BaseModel):
     default_value: Any = None
     default_value_text: str | None = None
     create_action: bool | None = None
-
 
 class Form(BaseModel):
     fields: List[FormField] = Field(default_factory=list)

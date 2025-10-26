@@ -16,7 +16,6 @@ from Buckets.managers.accounts import (
 from Buckets.modals.confirmation import ConfirmationModal
 from Buckets.modals.input import InputModal
 
-
 class AccountsList(ListView):
     def __init__(self, accounts, *args, **kwargs):
         super().__init__(
@@ -49,7 +48,6 @@ class AccountsList(ListView):
             *args,
             **kwargs,
         )
-
 
 class AccountMode(ScrollableContainer):
     BINDINGS = [

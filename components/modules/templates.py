@@ -20,7 +20,6 @@ from Buckets.managers.record_templates import (
 from Buckets.managers.records import create_record
 from Buckets.forms.recordtemplate_forms import RecordTemplateForm
 
-
 class Templates(Static):
     can_focus = True
 
