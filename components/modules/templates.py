@@ -1,6 +1,6 @@
 from textual import events
 from textual.binding import Binding
-from textual.containers import Container, Horizontal
+from textual.containers import Container, Horizontal, Vertical
 from textual.widgets import Label, Static
 
 from Buckets.modals.confirmation import ConfirmationModal
@@ -87,7 +87,7 @@ class Templates(Static):
         container = self.query(".templates")
         if len(container) > 0:
             container[0].remove()
-        container = Horizontal(classes="templates")
+        container = Vertical(classes="templates")
         container = self._create_templates_widgets(container)
         self.mount(container)
         if reset_state:

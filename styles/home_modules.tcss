@@ -210,36 +210,36 @@
   }
 }
 
-/* --- Templates rail --- */
+/* Templates rail */
 #templates-container {
-  /* Fill the left column in the new grid */
   height: 1fr;
 
   .templates {
-    height: 1fr; /* allow the list to stretch */
+    layout: vertical;   /* <— stack children vertically */
+    height: 1fr;
+    width: 1fr;
+    content-align: left top;
+  }
 
-    .empty {
-      width: 1fr;
-      margin-top: 1;
-      color: $primary-background-lighten-3;
-      text-align: center;
+  .template-item {
+    width: 1fr;         /* fill the rail’s width */
+    layout: horizontal; /* keep dot + label on one line */
+    height: auto;
+    padding: 0 1;
+    border: round $secondary;
+
+    &:focus {
+      border: round $accent;
     }
 
-    .template-item {
-      width: 1fr;           /* make items full-width for a vertical rail */
-      height: auto;
-      padding: 0 1;
-      layout: horizontal;
-      border: round $secondary;
+    .dot { padding-right: 1; }
+  }
 
-      &:focus {
-        border: round $accent;
-      }
-
-      .dot {
-        padding-right: 1;
-      }
-    }
+  .empty {
+    width: 1fr;
+    margin-top: 1;
+    color: $primary-background-lighten-3;
+    text-align: center;
   }
 }
 

@@ -57,16 +57,6 @@ class CategoriesHotkeys(BaseModel):
     browse_defaults: str = "b"
 
 
-class BucketsHotkeys(BaseModel):
-    """New: hotkeys for bucket actions within an account."""
-
-    new_bucket: str = "n"
-    edit_bucket: str = "e"
-    delete_bucket: str = "x"
-    transfer_between_buckets: str = "shift+t"
-    move_record_to_bucket: str = "m"
-
-
 class Hotkeys(BaseModel):
     new: str = "a"
     delete: str = "d"
@@ -76,7 +66,6 @@ class Hotkeys(BaseModel):
     home: HomeHotkeys = HomeHotkeys()
     record_modal: RecordModalHotkeys = RecordModalHotkeys()
     categories: CategoriesHotkeys = CategoriesHotkeys()
-    buckets: BucketsHotkeys = BucketsHotkeys()
 
 
 class Symbols(BaseModel):

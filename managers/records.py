@@ -19,6 +19,8 @@ Session = sessionmaker(bind=db_engine)
 
 
 def create_record(record_data: dict) -> Record:
+    if record_data.get("isIncome"):
+        record_data.pop("bucketId", None)  # ← no bucket for income
     session = Session()
     try:
         payload = dict(record_data)  # ← copy

@@ -1,5 +1,4 @@
 # buckets_page.py
-
 from datetime import datetime
 from textual.app import ComposeResult
 from textual.containers import Container

@@ -23,8 +23,18 @@
 #buckets-container {
   border: heavy $surface;
   padding: 0 1;
+
+  &:focus {
+    border: round $accent;
+  }
 }
-#buckets-table { height: 1fr; }
+  
+#buckets-table { 
+  height: 1fr; 
+  &:focus {
+    border: round $accent;
+  }
+}
 
 /* Categories sizing */
 .h #categories-container { height: 100%; }
