@@ -84,4 +84,3 @@ def receive_before_insert(mapper, connection, target):
         select(func.max(RecordTemplate.order))
     ).scalar_one_or_none()
     target.order = (max_order or 0) + 1
-

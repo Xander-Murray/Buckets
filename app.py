@@ -21,7 +21,6 @@ from Buckets.components.jumper import Jumper
 from Buckets.config import CONFIG, write_state
 from Buckets.home import Home
 from Buckets.buckets_page import BucketsPage
-from Buckets.provider import BucketsProvider as AppProvider
 
 
 PAGES = [
@@ -44,7 +43,6 @@ class App(TextualApp):
         (CONFIG.hotkeys.home.cycle_tabs, "cycle_tabs", "Cycle tabs"),
         ("ctrl+q", "quit", "Quit"),
     ]
-    COMMANDS = {AppProvider}
 
     layout: reactive[str] = reactive("h")
     _jumping: reactive[bool] = reactive(False, init=False, bindings=True)
@@ -174,9 +172,6 @@ class App(TextualApp):
     def action_goToTab(self, tab_number: int) -> None:
         tabs = self.query_one(Tabs)
         tabs.active = f"t{tab_number}"
-
-    def action_quit(self) -> None:
-        self.exit()
 
     def action_cycle_tabs(self) -> None:
         self.current_tab = (self.current_tab + 1) % len(PAGES)
