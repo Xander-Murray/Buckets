@@ -8,8 +8,6 @@ A fast, keyboard-friendly TUI for envelope-style budgeting. Track accounts, cate
 
 ## Screenshots
 
-> Replace these placeholders with real images from your repo (e.g., `docs/screens/`).
-
 **Home Page**
 
 ![Home page](./screenshots/App_2025-10-26T08_39_06_947883.svg)
