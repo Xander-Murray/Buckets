@@ -14,16 +14,18 @@ _RESTRICT_TYPES = {
     "number": r"^-?\d*\.?\d*(?:[+\-*\/]-?\d*\.?\d+)*[+\-*\/\.]?$",
 }
 
+
 class Fields(Static):
     """Container for multiple form fields"""
 
-    def __init__(self, fields: Form):  # should rename, but whatever
+    def __init__(self, fields: Form):
         super().__init__()
         self.form = fields
 
     def compose(self) -> ComposeResult:
         for field in self.form.fields:
             yield Field(field)
+
 
 class Field(Static):
     """Individual form field that can be text, number, boolean, or autocomplete"""
@@ -68,17 +70,14 @@ class Field(Static):
 
     def handle_select_index(self, index: int) -> None:
         """Handler for (externally) selecting an autocomplete option"""
-        # Find matching option and set held value
         if index == -1:
             return
-        # Get the selected item directly using the index
         selected_item = self.field.options.items[index]
         self.input.heldValue = selected_item.value
 
         if self.field.key == "categoryId":
             category = get_category_by_id(selected_item.value)
             if category and category.parentCategory:
-                # Update postfix display for category fields
                 postfix_display = f" {selected_item.postfix}"
                 self.autocomplete_postfix_display_label.update(
                     f"[{category.parentCategory.color}]{postfix_display}[/]"

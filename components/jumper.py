@@ -5,11 +5,13 @@ from textual.geometry import Offset
 from textual.screen import Screen
 from textual.widget import Widget
 
+
 @runtime_checkable
 class Jumpable(Protocol):
     """A widget which we can jump focus to."""
 
     jump_key: str
+
 
 class JumpInfo(NamedTuple):
     """Information returned by the jumper for each jump target."""
@@ -19,6 +21,7 @@ class JumpInfo(NamedTuple):
 
     widget: str | Widget
     """Either the ID or a direct reference to the widget."""
+
 
 class Jumper:
     """An Amp-like jumping mechanism for quick spatial navigation"""
@@ -38,8 +41,6 @@ class Jumper:
             try:
                 widget_offset = screen.get_offset(child)
             except NoWidget:
-                # The widget might not be visible in the layout
-                # due to it being hidden in some modes.
                 continue
 
             if child.id and child.id in ids_to_keys:

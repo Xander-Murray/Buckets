@@ -12,7 +12,6 @@ from Buckets.managers.record_templates import get_record_templates
 from Buckets.managers.records import get_record_by_id
 from Buckets.managers.buckets import get_buckets_by_account  # ← fix import
 
-# blueprint (never mutated)
 _RECORD_FORM = Form(
     fields=[
         FormField(
@@ -72,6 +71,7 @@ _RECORD_FORM = Form(
         ),
     ]
 )
+
 
 class RecordForm:
     """Stateless; options are populated per call."""
