@@ -5,9 +5,8 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload, sessionmaker
 
-from Buckets.managers.utils import get_operator_amount, get_start_end_of_period
 from Buckets.models.account import Account
-from Buckets.models.category import Category
+from Buckets.managers.utils import get_start_end_of_period
 from Buckets.models.database.app import db_engine
 from Buckets.models.record import Record
 from Buckets.models.bucket import Bucket
@@ -73,10 +72,6 @@ def get_record_by_id(record_id: int) -> Record | None:
 def get_records(
     offset: int = 0,
     offset_type: str = "month",
-    account_id: int | None = None,  # kept for compatibility
-    category_piped_names: str | None = None,  # kept for compatibility
-    operator_amount: str | None = None,  # kept for compatibility
-    label: str | None = None,  # kept for compatibility
 ) -> list[Record]:
     session = Session()
     try:
@@ -86,7 +81,6 @@ def get_records(
             joinedload(Record.transferToAccount),
         )
 
-        # Only constrain by period; ignore everything else
         start_of_period, end_of_period = get_start_end_of_period(offset, offset_type)
         query = query.filter(
             Record.date >= start_of_period,

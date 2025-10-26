@@ -75,7 +75,6 @@ Records .label-highlight-match {
     # ---------- View ---------- #
 
     def compose(self) -> ComposeResult:
-        # No selectors / filters UI
         with Container(classes="selectors"):
             pass
 
@@ -87,4 +86,4 @@ Records .label-highlight-match {
         )
         yield self.table
         yield EmptyIndicator("No entries")
-
+        # No selectors / filters UI

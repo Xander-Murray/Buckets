@@ -20,7 +20,6 @@ class Home(Static):
     filter = {
         "offset": 0,
         "offset_type": CONFIG.defaults.period,
-        "byAccount": False,
     }
 
     BINDINGS = [
@@ -200,8 +199,6 @@ class Home(Static):
 
         self.accounts_module.rebuild()
         self.insights_module.rebuild()
-        if self.filter["byAccount"]:
-            self.record_module.rebuild()
 
     def action_select_prev_account(self) -> None:
         self._select_account(-1)
@@ -213,7 +210,6 @@ class Home(Static):
         self._select_account(id=account_id)
 
     def action_toggle_use_account(self) -> None:
-        self.filter["byAccount"] = not self.filter["byAccount"]
         self.insights_module.rebuild()
         self.record_module.rebuild()
 

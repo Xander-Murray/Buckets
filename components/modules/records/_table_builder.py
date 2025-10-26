@@ -50,11 +50,6 @@ class RecordTableBuilder:
         return get_records(
             offset=self.page_parent.filter["offset"],
             offset_type=self.page_parent.filter["offset_type"],
-            account_id=(
-                self.page_parent.mode["accountId"]["default_value"]
-                if self.page_parent.filter.get("byAccount")
-                else None
-            ),
         )
 
     def _initialize_table(self, table: DataTable) -> None:
