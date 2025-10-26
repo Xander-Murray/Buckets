@@ -1,0 +1,23 @@
+
+/* ----------- Categories ----------- */
+
+.h {
+  #categories-container {
+    height: 100%
+  }
+}
+
+.v {
+  #categories-container {
+    height: 1fr;
+    width: 50;
+  }
+}
+
+#categories-container {
+  #categories-table {
+    width: 46;
+  }
+}
+
+

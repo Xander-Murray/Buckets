@@ -1,19 +1,24 @@
+# Buckets/config.py
+from __future__ import annotations
+
+import os
 import platform
 import subprocess
 import warnings
+from pathlib import Path
 from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, Field, ValidationError
 
 
-from pathlib import Path
-
-
-def config_file():
+def config_file() -> Path:
     """Return the path to the local config.yaml file."""
     project_root = Path(__file__).resolve().parent.parent  # points to Buckets/
     return project_root / "config.yaml"
+
+
+# ---------- Defaults & basic config blocks ----------
 
 
 class Defaults(BaseModel):
@@ -29,12 +34,11 @@ class DatemodeHotkeys(BaseModel):
 
 
 class HomeHotkeys(BaseModel):
+    # kept
     cycle_tabs: str = "c"
     budgets: str = "b"
     new_transfer: str = "t"
-    toggle_splits: str = "s"
     display_by_date: str = "q"
-    display_by_person: str = "w"
     advance_filter: str = "f"
     cycle_offset_type: str = "."
     toggle_income_mode: str = "/"
@@ -45,9 +49,6 @@ class HomeHotkeys(BaseModel):
 
 
 class RecordModalHotkeys(BaseModel):
-    new_split: str = "ctrl+a"
-    new_paid_split: str = "ctrl+shift+a"
-    delete_last_split: str = "ctrl+d"
     submit_and_template: str = "ctrl+t"
 
 
@@ -56,50 +57,34 @@ class CategoriesHotkeys(BaseModel):
     browse_defaults: str = "b"
 
 
+class BucketsHotkeys(BaseModel):
+    """New: hotkeys for bucket actions within an account."""
+
+    new_bucket: str = "n"
+    edit_bucket: str = "e"
+    delete_bucket: str = "x"
+    transfer_between_buckets: str = "shift+t"
+    move_record_to_bucket: str = "m"
+
+
 class Hotkeys(BaseModel):
     new: str = "a"
     delete: str = "d"
     edit: str = "e"
     toggle_jump_mode: str = "v"
+
     home: HomeHotkeys = HomeHotkeys()
     record_modal: RecordModalHotkeys = RecordModalHotkeys()
     categories: CategoriesHotkeys = CategoriesHotkeys()
+    buckets: BucketsHotkeys = BucketsHotkeys()
 
 
 class Symbols(BaseModel):
     line_char: str = "│"
     finish_line_char: str = "╰"
-    split_paid: str = "✓"
-    split_unpaid: str = "⨯"
     category_color: str = "●"
     amount_positive: str = "+"
     amount_negative: str = "-"
-
-    # class BudgetingStates(BaseModel):
-    #     # ---------- Income policies --------- #
-    #     # FLEXIBILITY - periodIncome: use the current period's income, or if less than income_assess_threshold, use the past period's income. Uses income_assess_fallback if resulting income is less than it
-    #     # SIMPLICITY - fallback: uses income_assess_fallback if income this period is less than it
-    #     income_assess_metric: Literal["periodIncome", "fallback"] = "periodIncome"
-    #     income_assess_threshold: float = 100
-    #     income_assess_fallback: float = 3500  # Minimum income
-    #     # -------- Savings budgetting -------- #
-    #     savings_assess_metric: Literal["percentagePeriodIncome", "setAmount"] = (
-    #         "percentagePeriodIncome"
-    #     )
-    #     savings_percentage: float = (
-    #         0.2  # used only if savings_assess_metric is percentagePeriodIncome
-    #     )
-    #     savings_amount: float = 0  # used only if savings_assess_metric is setAmount
-    #     # ---------- MNW budgetting ---------- #
-    #     wants_spending_assess_metric: Literal["percentageQuota", "setAmount"] = (
-    #         "percentageQuota"  # percentage of all expenses
-    #     )
-    #     wants_spending_percentage: float = (
-    #         0.2  # used only if wants_spending_assess_metric is setPercentage
-    #     )
-    #     wants_spending_amount: float = (
-    #         0  # used only if wants_spending_assess_metric is setAmount
-    #     )
 
 
 class State(BaseModel):
@@ -114,7 +99,7 @@ class Config(BaseModel):
     defaults: Defaults = Defaults()
     state: State = State()
 
-    def __init__(self, **data):
+    def __init__(self, **data: Any):
         try:
             config_data = self._load_yaml_config()
             merged_data = {**self.model_dump(), **config_data, **data}
@@ -128,11 +113,9 @@ class Config(BaseModel):
                 input_value = error.get("input")
                 allowed_values = None
 
-                # Extract allowed values for literal errors
                 if error["type"] == "literal_error":
-                    # Parse the error message to extract allowed values
                     msg = error["msg"]
-                    allowed_list = msg.split("'")[1::2]  # Extract values between quotes
+                    allowed_list = msg.split("'")[1::2]
                     allowed_values = " or ".join(f"'{v}'" for v in allowed_list)
 
                 message = f"Invalid configuration in field '{field_path}'"
@@ -146,41 +129,40 @@ class Config(BaseModel):
             raise ConfigurationError("\n\n".join(error_messages))
 
     def _load_yaml_config(self) -> dict[str, Any]:
-        config_path = config_file()
-        if not config_path.is_file():
+        path = config_file()
+        if not path.is_file():
             return {}
-
         try:
-            with open(config_path, "r") as f:
-                config = yaml.safe_load(f)
-                return config if isinstance(config, dict) else {}
+            with open(path, "r") as f:
+                data = yaml.safe_load(f)
+                return data if isinstance(data, dict) else {}
         except Exception as e:
             warnings.warn(f"Error loading config file: {e}")
             return {}
 
-    def ensure_yaml_fields(self):
+    def ensure_yaml_fields(self) -> None:
         try:
             with open(config_file(), "r") as f:
-                config = yaml.safe_load(f) or {}
+                current = yaml.safe_load(f) or {}
         except FileNotFoundError:
-            config = {}
+            current = {}
 
-        def update_config(default, current):
-            for key, value in default.items():
-                if isinstance(value, dict):
-                    current[key] = update_config(value, current.get(key, {}))
-                elif key not in current:
-                    current[key] = value
-            return current
+        def merge_defaults(default: dict, target: dict) -> dict:
+            for k, v in default.items():
+                if isinstance(v, dict):
+                    target[k] = merge_defaults(v, target.get(k, {}))
+                elif k not in target:
+                    target[k] = v
+            return target
 
         default_config = self.model_dump()
-        config = update_config(default_config, config)
+        merged = merge_defaults(default_config, current)
 
         with open(config_file(), "w") as f:
-            yaml.dump(config, f, default_flow_style=False)
+            yaml.dump(merged, f, default_flow_style=False)
 
     @classmethod
-    def get_default(cls):
+    def get_default(cls) -> "Config":
         return cls(
             hotkeys=Hotkeys(), symbols=Symbols(), defaults=Defaults(), state=State()
         )
@@ -192,44 +174,43 @@ class ConfigurationError(Exception):
     pass
 
 
-CONFIG = None
+CONFIG: Config | None = None
 
 
-def open_config_file():
+def open_config_file() -> None:
     """Open the config file with the default application."""
-    config_path = config_file()
-    if platform.system() == "Darwin":  # macOS
-        subprocess.run(["open", config_path])
-    elif platform.system() == "Windows":  # Windows
-        os.startfile(config_path)
-    else:  # Linux
-        subprocess.run(["xdg-open", config_path])
+    path = str(config_file())
+    if platform.system() == "Darwin":
+        subprocess.run(["open", path])
+    elif platform.system() == "Windows":
+        os.startfile(path)  # type: ignore[attr-defined]
+    else:
+        subprocess.run(["xdg-open", path])
 
 
-def load_config():
-    f = config_file()
-    if not f.exists():
+def load_config() -> None:
+    path = config_file()
+    if not path.exists():
         try:
-            f.touch()
-            with open(f, "w") as f:
+            path.touch()
+            with open(path, "w") as f:
                 yaml.dump(Config.get_default().model_dump(), f)
         except OSError:
+            # non-fatal; we'll still try to load defaults
             pass
 
     global CONFIG
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            CONFIG = Config()  # ignore warnings about empty env file
+            CONFIG = Config()
     except ConfigurationError as e:
         print("\nConfiguration Error:")
         print("==================")
         print(f"{e}\n")
         print("Would you like to open the config file to fix this? (y/n)")
-
         try:
-            response = input().lower()
-            if response.startswith("y"):
+            if input().strip().lower().startswith("y"):
                 open_config_file()
                 print(
                     "\nOpened config file. Please fix the error and restart the application."
@@ -240,12 +221,11 @@ def load_config():
                 )
         except KeyboardInterrupt:
             print("\nExiting...")
-
         raise SystemExit(1)
 
 
 def write_state(key: str, value: Any) -> None:
-    """Write a state value to the config.yaml file, supporting nested keys with dot operator."""
+    """Write a nested state value to config.yaml using dot notation (e.g., 'theme' or 'foo.bar.baz')."""
     try:
         with open(config_file(), "r") as f:
             config = yaml.safe_load(f) or {}
@@ -261,9 +241,10 @@ def write_state(key: str, value: Any) -> None:
     with open(config_file(), "w") as f:
         yaml.dump(config, f, default_flow_style=False)
 
-    # update the global config object
+    # update in-memory object
     global CONFIG
-    d = CONFIG.state
-    for k in keys[:-1]:
-        d = getattr(d, k)
-    setattr(d, keys[-1], value)
+    if CONFIG is not None:
+        d2 = CONFIG.state
+        for k in keys[:-1]:
+            d2 = getattr(d2, k)
+        setattr(d2, keys[-1], value)

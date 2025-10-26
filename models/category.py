@@ -10,29 +10,36 @@ class Nature(Enum):
     NEED = "Need"
     MUST = "Must"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
 
 class Category(Base):
     __tablename__ = "category"
 
+    # timestamps / soft delete
     createdAt = Column(DateTime, nullable=False, default=datetime.now)
     updatedAt = Column(
         DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
     deletedAt = Column(DateTime, nullable=True)
 
+    # fields
     id = Column(Integer, primary_key=True, index=True)
     parentCategoryId = Column(Integer, ForeignKey("category.id"), nullable=True)
     name = Column(String, nullable=False)
     nature = Column(SQLEnum(Nature), nullable=False)
     color = Column(String, nullable=False)
 
+    # relationships
     records = relationship("Record", back_populates="category")
     parentCategory = relationship(
-        "Category", back_populates="subCategories", remote_side=[id]
+        "Category",
+        back_populates="subCategories",
+        remote_side=[id],
     )
     subCategories = relationship(
-        "Category", back_populates="parentCategory", remote_side=[parentCategoryId]
+        "Category",
+        back_populates="parentCategory",
+        remote_side=[parentCategoryId],
     )

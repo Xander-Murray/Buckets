@@ -1,0 +1,33 @@
+/* overall container */
+.manager-modules-container {
+  height: 1fr;
+  width: 1fr;
+  padding: 0 2 1 2;
+}
+
+/* Horizontal layout (wide terminals) */
+.h .manager-modules-container { layout: horizontal; }
+.h .manager-modules-container .left { layout: vertical; }
+.h .manager-modules-container .right { width: 50; }
+
+/* Vertical layout (narrow terminals) */
+.v .manager-modules-container { layout: vertical; }
+.v .manager-modules-container .left { height: 65%; layout: vertical; }
+.v .manager-modules-container .right { height: 1fr; layout: horizontal; }
+
+/* Make Accounts take some space, Buckets fill the rest */
+#accounts-container { height: 40%; min-height: 8; }
+#buckets-container  { height: 1fr;  }
+
+/* Buckets panel visual + table fill */
+#buckets-container {
+  border: heavy $surface;
+  padding: 0 1;
+}
+#buckets-table { height: 1fr; }
+
+/* Categories sizing */
+.h #categories-container { height: 100%; }
+.v #categories-container { height: 1fr; width: 50; }
+#categories-container #categories-table { width: 46; }
+

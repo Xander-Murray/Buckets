@@ -5,25 +5,38 @@ import yaml
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
-# create the import
-from models.account import Account
-from models.category import Category, Nature
-from models.database.db import Base
-from models.record import Record
-from models.record_template import RecordTemplate
-from models.bucket import Bucket
+from Buckets.models.account import Account
+from Buckets.models.category import Category, Nature
+from Buckets.models.database.db import Base
+from Buckets.models.record import Record  # noqa: F401 (register table)
+from Buckets.models.record_template import RecordTemplate  # noqa: F401
+from Buckets.models.bucket import Bucket  # noqa: F401
 
-db_engine = create_engine("sqlite:///buckets.db", echo=False)
+# SQLite DB in project root
+DB_PATH = Path("buckets.db").resolve()
+db_engine = create_engine(f"sqlite:///{DB_PATH}", echo=False, future=True)
 Session = sessionmaker(bind=db_engine)
 
 
+def _create_outside_source_account(session):
+    outside = session.query(Account).filter_by(name="Outside source").first()
+    if not outside:
+        outside = Account(
+            name="Outside source",
+            description="Default account for external transactions",
+            beginningBalance=0.0,
+            hidden=True,
+        )
+        session.add(outside)
+        session.commit()
+
+
 def _create_default_categories(session):
-    category_account = session.query(Category).count()
-    if category_account > 0:
+    if session.query(Category).count() > 0:
         return
 
     yaml_path = (
-        Path(__file__).parent.parent.parent / "default" / "default_categories.yaml"
+        Path(__file__).resolve().parents[2] / "default" / "default_categories.yaml"
     )
 
     with open(yaml_path, "r", encoding="utf-8") as file:
@@ -62,11 +75,9 @@ def _fix_dangling_categories(session):
         )
         .all()
     )
-
     for subcategory in dangling_subcategories:
         subcategory.deletedAt = datetime.now()
         session.add(subcategory)
-
     session.commit()
 
 
@@ -86,13 +97,18 @@ def _sync_database_schema():
 
                 for column_name in model_columns - existing_columns:
                     column = table.columns[column_name]
+                    default_sql = ""
+                    if column.default is not None:
+                        try:
+                            default_sql = f" DEFAULT {column.default.arg}"
+                        except Exception:
+                            pass
+                    notnull_sql = " NOT NULL" if not column.nullable else ""
                     with db_engine.begin() as conn:
                         conn.execute(
                             text(
-                                f'ALTER TABLE {table.name} ADD COLUMN "{column_name}" '
-                                f"{column.type} "
-                                f"{'NOT NULL' if not column.nullable else ''} "
-                                f"{'DEFAULT ' + str(column.default.arg) if column.default is not None else ''}"
+                                f'ALTER TABLE "{table.name}" ADD COLUMN "{column_name}" '
+                                f"{column.type}{notnull_sql}{default_sql}"
                             )
                         )
     except Exception as e:
@@ -103,6 +119,7 @@ def init_db():
     _sync_database_schema()
     Base.metadata.create_all(db_engine)
     session = Session()
+    _create_outside_source_account(session)
     _create_default_categories(session)
     _fix_dangling_categories(session)
     session.close()
@@ -113,5 +130,6 @@ def wipe_database():
     _sync_database_schema()
     Base.metadata.create_all(db_engine)
     session = Session()
+    _create_outside_source_account(session)
     _create_default_categories(session)
     session.close()

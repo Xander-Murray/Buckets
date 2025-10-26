@@ -15,22 +15,24 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship, validates
 
-from config import CONFIG
-
+from Buckets.config import CONFIG
 from .database.db import Base
 
 
 class RecordTemplate(Base):
     __tablename__ = "record_template"
 
+    # timestamps
     createdAt = Column(DateTime, nullable=False, default=datetime.now)
     updatedAt = Column(
         DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
 
+    # fields
     id = Column(Integer, primary_key=True, index=True)
     label = Column(String, nullable=False)
     amount = Column(Float, CheckConstraint("amount > 0"), nullable=False)
+
     accountId = Column(Integer, ForeignKey("account.id"), nullable=False)
     categoryId = Column(Integer, ForeignKey("category.id"), nullable=True)
 
@@ -45,12 +47,13 @@ class RecordTemplate(Base):
     )
     transferToAccountId = Column(Integer, ForeignKey("account.id"), nullable=True)
 
+    # relationships
     account = relationship("Account", foreign_keys=[accountId])
     category = relationship("Category", foreign_keys=[categoryId])
     transferToAccount = relationship("Account", foreign_keys=[transferToAccountId])
 
     def to_dict(self) -> dict:
-        """Creates a dictionary object to feed into create_record."""
+        """Return a dict suitable for creating a real Record from this template."""
         return {
             "label": self.label,
             "amount": self.amount,
@@ -76,7 +79,9 @@ class RecordTemplate(Base):
 
 @event.listens_for(RecordTemplate, "before_insert")
 def receive_before_insert(mapper, connection, target):
+    """Auto-increment `order` to max(order)+1 before insert."""
     max_order = connection.execute(
         select(func.max(RecordTemplate.order))
     ).scalar_one_or_none()
     target.order = (max_order or 0) + 1
+
