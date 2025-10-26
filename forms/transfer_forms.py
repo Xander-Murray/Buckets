@@ -1,136 +1,110 @@
-import copy
 from datetime import datetime
-
 from rich.text import Text
-
 from Buckets.forms.form import Form, FormField, Option, Options
 from Buckets.managers.record_templates import get_transfer_templates
 from Buckets.models.record import Record
 
+_TRANSFER_FORM = Form(
+    fields=[
+        FormField(
+            placeholder="Label",
+            title="Label / Template name",
+            key="label",
+            type="autocomplete",
+            options=Options(),
+            autocomplete_selector=False,
+            is_required=True,
+        ),
+        FormField(
+            title="Amount",
+            key="amount",
+            type="number",
+            placeholder="0.00",
+            min=0,
+            is_required=True,
+        ),
+        FormField(
+            title="Date", key="date", type="dateAutoDay", placeholder="dd (mm) (yy)"
+        ),
+    ]
+)
+
+_TRANSFER_TEMPLATE_FORM = Form(
+    fields=[
+        FormField(
+            title="Label",
+            key="label",
+            type="string",
+            placeholder="Label",
+            is_required=True,
+        ),
+        FormField(
+            title="Amount",
+            key="amount",
+            type="number",
+            placeholder="0.00",
+            min=0,
+            is_required=True,
+        ),
+    ]
+)
+
 
 class TransferForm:
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    # ------------ Blueprints ------------ #
-
-    FORM = Form(
-        fields=[
-            FormField(
-                placeholder="Label",
-                title="Label / Template name",
-                key="label",
-                type="autocomplete",
-                options=Options(),
-                autocomplete_selector=False,
-                is_required=True,
-            ),
-            FormField(
-                title="Amount",
-                key="amount",
-                type="number",
-                placeholder="0.00",
-                min=0,
-                is_required=True,
-            ),
-            FormField(
-                title="Date",
-                key="date",
-                type="dateAutoDay",
-                placeholder="dd (mm) (yy)",
-            ),
-        ]
-    )
-
-    TEMPLATE_FORM = Form(
-        fields=[
-            FormField(
-                title="Label",
-                key="label",
-                type="string",
-                placeholder="Label",
-                is_required=True,
-            ),
-            FormField(
-                title="Amount",
-                key="amount",
-                type="number",
-                placeholder="0.00",
-                min=0,
-                is_required=True,
-            ),
-        ]
-    )
-
-    # ----------------- - ---------------- #
-
-    def __init__(self, isTemplate: bool = False, defaultDate: str = None):
+    def __init__(self, isTemplate: bool = False, defaultDate: str | None = None):
         self.isTemplate = isTemplate
         self.defaultDate = defaultDate
-        self._populate_form_options()
 
-    # region Helpers
-    # -------------- Helpers ------------- #
-
-    def _populate_form_options(self):
+    def _template_options(self) -> Options:
         templates = get_transfer_templates()
-        self.FORM.fields[0].options = Options(
+        return Options(
             items=[
                 Option(
-                    text=template.label,
-                    value=template.id,
-                    postfix=Text(f"{template.amount}", style="yellow"),
+                    text=t.label,
+                    value=t.id,
+                    postfix=Text(f"{t.amount}", style="yellow"),
                 )
-                for template in templates
+                for t in templates
             ]
         )
-        self.FORM.fields[2].default_value = self.defaultDate
 
-    # region Builders
-    # ------------- Builders ------------- #
-
-    def get_filled_form(self, record: Record) -> Form:
-        """Return a copy of the form with values from the record"""
-        filled_form = copy.deepcopy(
-            self.FORM if not self.isTemplate else self.TEMPLATE_FORM
-        )
-
-        if not record.isTransfer:
-            return filled_form, []
-
-        for field in filled_form.fields:
-            fieldKey = field.key
-            value = getattr(record, fieldKey)
-
-            match fieldKey:
-                case "date":
-                    # if value is this month, simply set %d, else set %d %m %y
-                    if value.month == datetime.now().month:
-                        field.default_value = value.strftime("%d")
-                    else:
-                        field.default_value = value.strftime("%d %m %y")
-                case "label":
-                    field.default_value = str(value) if value is not None else ""
-                    field.type = "string"  # disable autocomplete
-                case _:
-                    field.default_value = str(value) if value is not None else ""
-
-        return filled_form
+    def _base(self) -> Form:
+        f = (_TRANSFER_TEMPLATE_FORM if self.isTemplate else _TRANSFER_FORM).clone()
+        if not self.isTemplate:
+            f.fields[0].options = self._template_options()
+            f.fields[2].default_value = self.defaultDate
+        return f
 
     def get_form(self, hidden_fields: dict = {}):
-        """Return the base form with default values"""
-        form = copy.deepcopy(self.FORM if not self.isTemplate else self.TEMPLATE_FORM)
-        for field in form.fields:
-            key = field.key
-            if key in hidden_fields:
+        f = self._base()
+        for field in f.fields:
+            if field.key in hidden_fields:
                 field.type = "hidden"
-                if isinstance(hidden_fields[key], dict):
-                    field.default_value = hidden_fields[key]["default_value"]
-                    field.default_value_text = hidden_fields[key]["default_value_text"]
+                v = hidden_fields[field.key]
+                if isinstance(v, dict):
+                    field.default_value = v.get("default_value")
+                    field.default_value_text = v.get("default_value_text")
                 else:
-                    field.default_value = hidden_fields[key]
-        return form
+                    field.default_value = v
+        return f
+
+    def get_filled_form(self, record: Record) -> Form:
+        f = self._base()
+        if not record.isTransfer:
+            return f
+        for field in f.fields:
+            k = field.key
+            v = getattr(record, k)
+            match k:
+                case "date":
+                    field.default_value = (
+                        v.strftime("%d")
+                        if v.month == datetime.now().month
+                        else v.strftime("%d %m %y")
+                    )
+                case "label":
+                    field.default_value = "" if v is None else str(v)
+                    field.type = "string"  # disable autocomplete
+                case _:
+                    field.default_value = "" if v is None else str(v)
+        return f

@@ -1,4 +1,3 @@
-# Buckets/utils/format.py
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -6,10 +5,6 @@ from Buckets.config import CONFIG
 
 
 def parse_formula_expression(value: str) -> float:
-    """
-    Parse a simple math expression (e.g., '10+2.5-3') and return a rounded float.
-    We assume the input is already sanitized by the UI; this is a convenience helper.
-    """
     try:
         value = value.replace("+-", "-")
         # trim dangling operator at end
@@ -74,6 +69,5 @@ def format_period_to_readable(filter: dict) -> str:
         end = start + timedelta(days=6)
         return f"{start.strftime('%d %b')} - {end.strftime('%d %b')}"
 
-    # Fallback for unexpected values
     target_date = now + timedelta(days=offset)
     return f"{target_date.strftime('%d %B %Y')}"

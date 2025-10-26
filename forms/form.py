@@ -5,8 +5,7 @@ from rich.console import RenderableType
 
 class Option(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
-
-    text: str | None = None  # if not provided, the value will be used
+    text: str | None = None
     value: Any
     prefix: RenderableType | None = None
     postfix: RenderableType | None = None
@@ -32,15 +31,15 @@ class FormField(BaseModel):
         "dateAutoDay",
         "hidden",
     ]
-    autocomplete_selector: bool = True  # autocomplete fields as a selector field. If false, acts as regular optional autocomplete
+    autocomplete_selector: bool = True
     is_required: bool = False
     min: float | int | None = None
     max: float | int | None = None
-    labels: List[str] | None = None  # for type "boolean"
-    options: Options | None = None  # for type "autocomplete"
+    labels: List[str] | None = None
+    options: Options | None = None
     default_value: Any = None
     default_value_text: str | None = None
-    create_action: bool | None = None  # for type "autocomplete"
+    create_action: bool | None = None
 
 
 class Form(BaseModel):
@@ -48,3 +47,7 @@ class Form(BaseModel):
 
     def __len__(self):
         return len(self.fields)
+
+    def clone(self) -> "Form":
+        # pydantic v2
+        return self.model_copy(deep=True)

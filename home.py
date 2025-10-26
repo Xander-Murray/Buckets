@@ -246,17 +246,22 @@ class Home(Static):
         self.templates_module.select_template(9)
 
     # -------- View --------
+
     def compose(self) -> ComposeResult:
         with Static(classes="home-modules-container"):
-            with Static(classes="left"):
+            # LEFT column
+            with Static(id="col-left"):
                 with Static(id="home-top-container"):
                     yield self.accounts_module
                     with Static(id="home-mode-container"):
                         yield self.income_mode_module
                         yield self.date_mode_module
                 yield self.insights_module
-            with Static(classes="right"):
-                # Always render these, even with empty data
-                yield self.templates_module
-                yield self.record_module
 
+            # MIDDLE column (Templates)
+            with Static(id="col-middle"):
+                yield self.templates_module
+
+            # RIGHT column (Records)
+            with Static(id="col-right"):
+                yield self.record_module

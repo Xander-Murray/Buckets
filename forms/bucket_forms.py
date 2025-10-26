@@ -1,47 +1,44 @@
-# forms/bucket_forms.py
-import copy
 from rich.text import Text
-
 from Buckets.forms.form import Form, FormField, Option, Options
 from Buckets.managers.accounts import get_all_accounts_with_balance
 from Buckets.managers.buckets import get_bucket_by_id, get_buckets_by_account
 
+# blueprint (never mutated)
+_BUCKET_BASE = Form(
+    fields=[
+        FormField(
+            title="Name",
+            key="name",
+            type="string",
+            placeholder="My Bucket",
+            is_required=True,
+        ),
+        FormField(
+            title="Amount",
+            key="amount",
+            type="number",
+            placeholder="0.00",
+            min=0,
+            is_required=True,
+        ),
+        FormField(
+            title="Account",
+            key="accountId",
+            type="autocomplete",
+            options=Options(),
+            is_required=True,
+            placeholder="Select Account",
+        ),
+    ]
+)
+
 
 class BucketForm:
-    """Create/Edit bucket form."""
+    """Stateless: options populated per-call."""
 
-    BASE = Form(
-        fields=[
-            FormField(
-                title="Name",
-                key="name",
-                type="string",
-                placeholder="My Bucket",
-                is_required=True,
-            ),
-            FormField(
-                title="Amount",
-                key="amount",
-                type="number",
-                placeholder="0.00",
-                min=0,
-                is_required=True,
-            ),
-            FormField(
-                title="Account",
-                key="accountId",
-                type="autocomplete",
-                options=Options(),
-                is_required=True,
-                placeholder="Select Account",
-            ),
-        ]
-    )
-
-    def __init__(self) -> None:
-        # populate account options
+    def _account_options(self) -> Options:
         accounts = get_all_accounts_with_balance()
-        self.BASE.fields[2].options = Options(
+        return Options(
             items=[
                 Option(
                     text=acc.name,
@@ -53,7 +50,8 @@ class BucketForm:
         )
 
     def get_form(self, default_account_id: int | None = None) -> Form:
-        f = copy.deepcopy(self.BASE)
+        f = _BUCKET_BASE.clone()
+        f.fields[2].options = self._account_options()
         if default_account_id:
             f.fields[2].default_value = default_account_id
             for opt in f.fields[2].options.items:
@@ -65,32 +63,29 @@ class BucketForm:
     def get_filled_form(self, bucket_id: int) -> Form:
         b = get_bucket_by_id(bucket_id)
         f = self.get_form(default_account_id=b.accountId if b else None)
-        if b:
-            for field in f.fields:
-                match field.key:
-                    case "accountId":
-                        field.default_value = b.accountId
-                        field.default_value_text = next(
-                            (
-                                opt.text
-                                for opt in field.options.items
-                                if opt.value == b.accountId
-                            ),
-                            "Account",
-                        )
-                    case _:
-                        field.default_value = (
-                            str(getattr(b, field.key))
-                            if getattr(b, field.key) is not None
-                            else ""
-                        )
+        if not b:
+            return f
+        for field in f.fields:
+            if field.key == "accountId":
+                field.default_value = b.accountId
+                field.default_value_text = next(
+                    (
+                        opt.text
+                        for opt in field.options.items
+                        if opt.value == b.accountId
+                    ),
+                    "Account",
+                )
+            else:
+                val = getattr(b, field.key)
+                field.default_value = "" if val is None else str(val)
         return f
 
 
 class BucketTransferForm:
     """Transfer funds between buckets within the selected account."""
 
-    BASE = Form(
+    _FORM = Form(
         fields=[
             FormField(
                 title="From",
@@ -120,10 +115,12 @@ class BucketTransferForm:
     )
 
     def __init__(self, account_id: int | None) -> None:
-        buckets = get_buckets_by_account(account_id) if account_id else []
-        opts = Options(items=[Option(text=b.name, value=b.id) for b in buckets])
-        self.BASE.fields[0].options = opts
-        self.BASE.fields[1].options = opts
+        self.account_id = account_id
 
     def get_form(self) -> Form:
-        return copy.deepcopy(self.BASE)
+        f = self._FORM.clone()
+        buckets = get_buckets_by_account(self.account_id) if self.account_id else []
+        opts = Options(items=[Option(text=b.name, value=b.id) for b in buckets])
+        f.fields[0].options = opts
+        f.fields[1].options = opts
+        return f

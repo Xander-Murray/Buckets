@@ -10,6 +10,7 @@ from Buckets.models.account import Account
 from Buckets.models.category import Category
 from Buckets.models.database.app import db_engine
 from Buckets.models.record import Record
+from Buckets.models.bucket import Bucket
 
 Session = sessionmaker(bind=db_engine)
 
@@ -20,8 +21,24 @@ Session = sessionmaker(bind=db_engine)
 def create_record(record_data: dict) -> Record:
     session = Session()
     try:
-        record = Record(**record_data)
+        payload = dict(record_data)  # ← copy
+        bucket_id = payload.pop("bucketId", None)  # ← strip unknown kw
+
+        # create the record (no bucketId on the model)
+        record = Record(**payload)
         session.add(record)
+
+        # If you want to decrement the bucket on EXPENSE create:
+        if (
+            bucket_id
+            and not payload.get("isIncome", False)
+            and not payload.get("isTransfer", False)
+        ):
+            bucket = session.query(Bucket).get(int(bucket_id))
+            if bucket is not None:
+                # subtract the expense amount from the bucket
+                bucket.amount = float(bucket.amount or 0) - float(payload["amount"])
+
         session.commit()
         session.refresh(record)
         session.expunge(record)
@@ -234,8 +251,12 @@ def update_record(record_id: int, updated_data: dict) -> Record | None:
     try:
         record = session.query(Record).get(record_id)
         if record:
-            for k, v in updated_data.items():
+            payload = dict(updated_data)
+            payload.pop("bucketId", None)  # ← prevent unexpected kw on setattr loop
+
+            for k, v in payload.items():
                 setattr(record, k, v)
+
             session.commit()
             session.refresh(record)
             session.expunge(record)
@@ -257,4 +278,3 @@ def delete_record(record_id: int) -> Record | None:
         return record
     finally:
         session.close()
-
