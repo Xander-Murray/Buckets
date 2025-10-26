@@ -12,11 +12,11 @@ A fast, keyboard-friendly TUI for envelope-style budgeting. Track accounts, cate
 
 **Home Page**
 
-![Home page](./screenshots/home.png)
+![Home page](./screenshots/App_2025-10-26T08_39_06_947883.svg)
 
 **Buckets View**
 
-![Buckets page](./screenshots/buckets.png)
+![Buckets page](./screenshots/App_2025-10-26T08_39_18_451560.svg)
 
 ---
 
