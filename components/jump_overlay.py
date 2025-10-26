@@ -15,11 +15,6 @@ if TYPE_CHECKING:
 
 
 class JumpOverlay(ModalScreen[str | Widget | None]):
-    """Overlay showing the jump targets.
-    Dismissed with the ID of the widget the jump was requested for on closing,
-    or a reference to the widget. Is dismissed with None if the user dismissed
-    the overlay without making a selection."""
-
     DEFAULT_CSS = """\
     JumpOverlay {
         background: black 25%;

@@ -1,9 +1,3 @@
-"""
-Textual App for the Buckets budgeting app (lean version).
-- Uses Buckets' CONFIG
-- Minimal: no theme plumbing, no extra CSS helpers
-"""
-
 from importlib.metadata import metadata, PackageNotFoundError
 
 from textual import events, log, on

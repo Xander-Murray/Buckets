@@ -5,9 +5,6 @@ from datetime import datetime
 from typing import Any, Dict, Tuple
 from textual.widget import Widget
 
-# Expect your Buckets/forms/form.py to expose Form and FormField with attributes used below.
-# If their names differ, either rename them or adjust the type hints here.
-# from Buckets.forms.form import Form, FormField
 from Buckets.utils.format import parse_formula_expression
 
 

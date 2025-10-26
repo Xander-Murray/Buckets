@@ -181,7 +181,6 @@ def delete_template(recordtemplate_id):
     try:
         recordtemplate = session.get(RecordTemplate, recordtemplate_id)
         if recordtemplate:
-            # Get all templates with higher order
             stmt = (
                 select(RecordTemplate)
                 .filter(RecordTemplate.order > recordtemplate.order)
@@ -189,16 +188,13 @@ def delete_template(recordtemplate_id):
             )
             templates = session.scalars(stmt).all()
 
-            # First update all orders to temporary negative values
             for i, template in enumerate(templates):
                 template.order = -(i + 1)
             session.flush()
 
-            # Delete the target template
             session.delete(recordtemplate)
             session.flush()
 
-            # Then update to final values
             for i, template in enumerate(templates):
                 template.order = recordtemplate.order + i
 

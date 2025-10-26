@@ -81,10 +81,6 @@ def get_start_end_of_period(
     return _get_start_end_of_month(offset)
 
 
-# ----------- period figures (no splits) ----------- #
-# Transfers are excluded from income/expense totals.
-
-
 def get_period_figures(
     accountId: int | None = None,
     offset_type: str | None = None,
@@ -161,4 +157,3 @@ def get_operator_amount(
             op, amt = operator_amount[:2], operator_amount[2:]
         return op, float(amt)
     return None, None
-

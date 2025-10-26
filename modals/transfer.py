@@ -138,7 +138,6 @@ class TransferModal(ModalScreen):
     def action_submit(self):
         resultForm, errors, isValid = validateForm(self, self.form)
         transfer_error_label = self.query_one("#transfer-error")
-        # custom check for from and to accounts
         if self.fromAccount == self.toAccount:
             transfer_error_label.update("From and to accounts cannot be the same")
             transfer_error_label.add_class("active")

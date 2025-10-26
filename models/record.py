@@ -37,7 +37,6 @@ class Record(Base):
     tags = Column(String, nullable=True)  # (unused in UI yet)
     isInProgress = Column(Boolean, nullable=False, default=False)  # (unused in UI)
 
-    # flags
     isIncome = Column(Boolean, nullable=False, default=False)
     isTransfer = Column(
         Boolean,
@@ -47,7 +46,6 @@ class Record(Base):
     )
     transferToAccountId = Column(Integer, ForeignKey("account.id"), nullable=True)
 
-    # relationships (mirror back_populates on the other side)
     account = relationship(
         "Account",
         back_populates="records",

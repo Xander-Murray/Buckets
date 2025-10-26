@@ -11,9 +11,6 @@ from Buckets.models.account import Account
 from Buckets.models.record import Record
 
 
-# ---------- Create ----------
-
-
 def create_account(data: dict) -> Account:
     """Create an account from a dict of fields."""
     session = Session()
@@ -28,20 +25,13 @@ def create_account(data: dict) -> Account:
         session.close()
 
 
-# ---------- Read helpers ----------
-
-
 def _get_base_accounts_query(get_hidden: bool = False):
     stmt = select(Account).filter(Account.deletedAt.is_(None))
     if not get_hidden:
         stmt = stmt.filter(Account.hidden.is_(False))
     else:
-        # If including hidden, sort with hidden last so visibles come first
         stmt = stmt.order_by(Account.hidden.asc(), Account.id.asc())
     return stmt
-
-
-# ---------- Reads ----------
 
 
 def get_all_accounts(get_hidden: bool = False) -> List[Account]:
@@ -56,7 +46,6 @@ def get_all_accounts(get_hidden: bool = False) -> List[Account]:
 def get_accounts_count(get_hidden: bool = False) -> int:
     session = Session()
     try:
-        # Count only non-deleted
         q = session.query(func.count(Account.id)).filter(Account.deletedAt.is_(None))
         if not get_hidden:
             q = q.filter(Account.hidden.is_(False))
@@ -95,17 +84,6 @@ def get_account_balance_by_id(account_id: int) -> float:
 
 
 def get_account_balance(account_id: int, session: Optional[Session] = None) -> float:
-    """
-    Net balance rule (no Split model):
-      - Start from Account.beginningBalance.
-      - For records on this account (Record.accountId == account_id):
-          * if isTransfer: subtract amount (transfer out)
-          * elif isIncome: add amount
-          * else (expense): subtract amount
-      - For transfer records INTO this account
-        (Record.isTransfer is True and Record.transferToAccountId == account_id):
-          * add amount
-    """
     own_session = False
     if session is None:
         session = Session()
@@ -118,7 +96,6 @@ def get_account_balance(account_id: int, session: Optional[Session] = None) -> f
 
         balance = float(acc.beginningBalance or 0.0)
 
-        # Records originating from this account
         origin_records = (
             session.query(Record).filter(Record.accountId == account_id).all()
         )
@@ -130,7 +107,6 @@ def get_account_balance(account_id: int, session: Optional[Session] = None) -> f
             else:
                 balance -= r.amount
 
-        # Transfers into this account
         incoming_transfers = (
             session.query(Record)
             .filter(Record.isTransfer.is_(True))
@@ -144,9 +120,6 @@ def get_account_balance(account_id: int, session: Optional[Session] = None) -> f
     finally:
         if own_session:
             session.close()
-
-
-# ---------- Updates / Deletes ----------
 
 
 def update_account(account_id: int, data: dict) -> Optional[Account]:
@@ -197,4 +170,3 @@ def delete_account(account_id: int) -> bool:
         return True
     finally:
         session.close()
-

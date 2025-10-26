@@ -73,16 +73,11 @@ def get_record_by_id(record_id: int) -> Record | None:
 def get_records(
     offset: int = 0,
     offset_type: str = "month",
-    account_id: int | None = None,
-    category_piped_names: str | None = None,
-    operator_amount: str | None = None,
-    label: str | None = None,
+    account_id: int | None = None,  # kept for compatibility
+    category_piped_names: str | None = None,  # kept for compatibility
+    operator_amount: str | None = None,  # kept for compatibility
+    label: str | None = None,  # kept for compatibility
 ) -> list[Record]:
-    """
-    Fetch records for a period with optional filters.
-    - Excludes nothing by default (caller can decide to ignore transfers).
-    - No split/person joins.
-    """
     session = Session()
     try:
         query = session.query(Record).options(
@@ -91,39 +86,16 @@ def get_records(
             joinedload(Record.transferToAccount),
         )
 
-        # Period filter
+        # Only constrain by period; ignore everything else
         start_of_period, end_of_period = get_start_end_of_period(offset, offset_type)
         query = query.filter(
             Record.date >= start_of_period,
             Record.date < end_of_period,
         )
 
-        # Optional filters
-        if account_id not in (None, ""):
-            query = query.filter(Record.accountId == account_id)
-
-        if category_piped_names not in (None, ""):
-            category_names = [
-                s.strip() for s in category_piped_names.split("|") if s.strip()
-            ]
-            if category_names:
-                query = query.join(Record.category).filter(
-                    Category.name.in_(category_names)
-                )
-
-        if operator_amount not in (None, ""):
-            operator, amount = get_operator_amount(operator_amount)
-            if operator and amount is not None:
-                query = query.filter(Record.amount.op(operator)(amount))
-
-        if label not in (None, ""):
-            query = query.filter(Record.label.ilike(f"%{label}%"))
-
-        # Stable ordering: newest date, then newest created
         created_at_col = getattr(Record, "createdAt")
         date_col = func.date(getattr(Record, "date"))
         query = query.order_by(date_col.desc(), created_at_col.desc())
-
         return query.all()
     finally:
         session.close()

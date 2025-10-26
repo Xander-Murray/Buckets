@@ -463,15 +463,6 @@ Dropdown .autocomplete--right-column {
 
         self.child.matches = matches
 
-        # # If there's exactly one match and input has focus, auto-select it
-        # if len(matches) == 1 and self.input_widget and self.input_widget.has_focus and (self.input_widget.value != matches[0].main.plain):
-        #     self.input_widget.value = matches[0].main.plain
-        #     self.app.mount(Label(matches[0].main.plain))
-        #     self.display = False
-        #     self.post_message(AutoComplete.Selected(item=matches[0]))
-        #     return
-
-        # Otherwise show dropdown when input has focus
         self.display = self.input_widget.has_focus
         self.cursor_home()
         self.reposition(input_cursor_position)
@@ -516,7 +507,6 @@ DropdownChild {
 }
     """
 
-    # TODO: Support awaitable and add debounce.
     def __init__(self, linked_input: Input):
         """Construct an Autocomplete. Autocomplete only works if your Screen has a dedicated layer
         called `textual-autocomplete`.
@@ -569,9 +559,6 @@ DropdownChild {
     @selected_index.setter
     def selected_index(self, value: int) -> None:
         self._selected_index = value % max(len(self.matches), 1)
-        # It's easier to just ask our parent to scroll here rather
-        # than having to make sure we do it in the parent each time we
-        # update the index. We always appear under the same parent anyway.
         region = Region(
             x=self.virtual_region.x,
             y=self.virtual_region.y + self._selected_index,

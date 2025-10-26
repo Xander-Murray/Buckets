@@ -47,32 +47,22 @@ class RecordTableBuilder:
     # ---------------- Helpers ---------------- #
 
     def _fetch_records(self):
-        params = {
-            "offset": self.page_parent.filter["offset"],
-            "offset_type": self.page_parent.filter["offset_type"],
-        }
-        if self.page_parent.filter.get("byAccount"):
-            params["account_id"] = self.page_parent.mode["accountId"]["default_value"]
-        if self.FILTERS["enabled"]():
-            params["category_piped_names"] = self.FILTERS["category"]()
-            params["operator_amount"] = self.FILTERS["amount"]()
-            params["label"] = self.FILTERS["label"]()
-        return get_records(**params)
+        return get_records(
+            offset=self.page_parent.filter["offset"],
+            offset_type=self.page_parent.filter["offset_type"],
+            account_id=(
+                self.page_parent.mode["accountId"]["default_value"]
+                if self.page_parent.filter.get("byAccount")
+                else None
+            ),
+        )
 
     def _initialize_table(self, table: DataTable) -> None:
         table.clear()
         table.columns.clear()
-        # Date-based view only
         table.add_columns(" ", "Category / Transfer", "Amount", "Label", "Account")
 
     def _get_label_string(self, text: str) -> Text | str:
-        if self.FILTERS["enabled"]() and self.FILTERS["label"]():
-            highlight_style = self.get_component_rich_style("label-highlight-match")
-            t = Text(text)
-            t.highlight_words(
-                [self.FILTERS["label"]()], style=highlight_style, case_sensitive=False
-            )
-            return t
         return text
 
     # ---------------- Date view ---------------- #

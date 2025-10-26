@@ -22,13 +22,10 @@ from .database.db import Base
 class RecordTemplate(Base):
     __tablename__ = "record_template"
 
-    # timestamps
-    createdAt = Column(DateTime, nullable=False, default=datetime.now)
     updatedAt = Column(
         DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )
 
-    # fields
     id = Column(Integer, primary_key=True, index=True)
     label = Column(String, nullable=False)
     amount = Column(Float, CheckConstraint("amount > 0"), nullable=False)
@@ -47,7 +44,6 @@ class RecordTemplate(Base):
     )
     transferToAccountId = Column(Integer, ForeignKey("account.id"), nullable=True)
 
-    # relationships
     account = relationship("Account", foreign_keys=[accountId])
     category = relationship("Category", foreign_keys=[categoryId])
     transferToAccount = relationship("Account", foreign_keys=[transferToAccountId])

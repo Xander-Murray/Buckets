@@ -10,23 +10,19 @@ class ModalContainer(ScrollableContainer):
 
     can_focus = False
 
-    # usage: ModalContainer(w1, w2, w3, ..., custom_classes="wrapper base-modal")
     def __init__(self, *content, custom_classes: str = "wrapper base-modal"):
         super().__init__(classes=custom_classes, id="modal-container")
         self.content = content
 
     def compose(self) -> ComposeResult:
-        # Simple header with a close button
         with Horizontal(classes="modal-header"):
             yield Button("×", id="modal-close")  # click to close
             yield Static("")  # spacer / keep layout simple
 
-        # Main content
         with Container(classes="container"):
             for widget in self.content:
                 yield widget
 
-        # Footer (no command palette)
         yield Footer(show_command_palette=False)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

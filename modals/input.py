@@ -16,9 +16,7 @@ class InputModal(ModalScreen):
         self.form = form
 
     # --------------- Hooks -------------- #
-
     def on_mount(self) -> None:
-        # Ensure initial visibility matches the switch default
         self._sync_bucket_visibility()
 
     def on_key(self, event: events.Key):
@@ -31,33 +29,25 @@ class InputModal(ModalScreen):
         elif event.key == "escape":
             self.dismiss(None)
 
-    # React to the Type (Expense/Income) switch toggling
     def on_switch_changed(self, event: Switch.Changed) -> None:
         if event.switch.id == "field-isIncome":
             self._sync_bucket_visibility()
 
-    # --------- Helpers (bucket show/hide) --------- #
     def _sync_bucket_visibility(self) -> None:
         """Hide the Bucket row when isIncome is True. Show when False."""
-        # Switch has id="field-isIncome" (created by Fields from form key)
         is_income = False
         try:
             is_income = self.query_one("#field-isIncome", Switch).value
         except Exception:
-            # If the switch isn't present in this form, nothing to do
             return
 
-        # The bucket row container uses id="row-field-bucketId"
         try:
             bucket_row = self.query_one("#row-field-bucketId")
         except Exception:
-            # No bucket field in this form => nothing to toggle
             return
 
-        # Toggle visibility of the entire row
         bucket_row.display = not is_income
 
-        # Optionally clear any selected bucket when hiding
         if is_income:
             try:
                 bucket_widget = self.query_one("#field-bucketId")
@@ -67,8 +57,6 @@ class InputModal(ModalScreen):
                     bucket_widget.value = ""
             except Exception:
                 pass
-
-    # ------------- Callbacks ------------ #
 
     def set_title(self, title: str):
         self.title = title
@@ -84,8 +72,6 @@ class InputModal(ModalScreen):
             for key, value in errors.items():
                 field = self.query_one(f"#row-field-{key}")
                 field.mount(Label(value, classes="error"))
-
-    # -------------- Compose ------------- #
 
     def compose(self) -> ComposeResult:
         yield ModalContainer(Fields(self.form))

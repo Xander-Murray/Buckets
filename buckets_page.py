@@ -63,12 +63,9 @@ class BucketsPage(Static):
             self.mode["accountId"]["default_value"] = sel.id
             self.mode["accountId"]["default_value_text"] = sel.name
 
-        # refresh modules based on new selection
         self.accounts_module.rebuild()
         self.buckets_module.rebuild()
         self.categories_module.rebuild()
-
-    # ---------- actions AccountMode expects ----------
 
     def action_select_account(self, account_id: int) -> None:
         self._select_account(id=account_id)

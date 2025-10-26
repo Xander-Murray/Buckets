@@ -14,9 +14,6 @@ class BucketTransferError(Exception):
     pass
 
 
-# ------------------------------
-# Create
-# ------------------------------
 def create_bucket(data: dict) -> Bucket:
     """
     Create a bucket.
@@ -41,9 +38,6 @@ def create_bucket(data: dict) -> Bucket:
         return bucket
 
 
-# ------------------------------
-# Read
-# ------------------------------
 def get_bucket_by_id(bucket_id: int) -> Optional[Bucket]:
     with Session() as s:
         bucket = s.get(Bucket, int(bucket_id))
@@ -77,9 +71,6 @@ def get_all_buckets(include_deleted: bool = False) -> list[Bucket]:
         return buckets
 
 
-# ------------------------------
-# Update
-# ------------------------------
 def update_bucket(bucket_id: int, data: dict) -> Optional[Bucket]:
     """
     Update a bucket. Updatable keys: name, amount, accountId
@@ -104,9 +95,6 @@ def update_bucket(bucket_id: int, data: dict) -> Optional[Bucket]:
         return bucket
 
 
-# ------------------------------
-# Delete (soft delete)
-# ------------------------------
 def delete_bucket(bucket_id: int) -> bool:
     with Session() as s:
         bucket = s.get(Bucket, int(bucket_id))
@@ -117,19 +105,9 @@ def delete_bucket(bucket_id: int) -> bool:
         return True
 
 
-# ------------------------------
-# Transfer
-# ------------------------------
 def transfer_between_buckets(
     from_bucket_id: int, to_bucket_id: int, amount: float
 ) -> bool:
-    """
-    Move `amount` from one bucket to another within the SAME account.
-
-    Raises:
-        BucketTransferError: if ids are the same, buckets missing, accounts differ,
-                             amount invalid, or insufficient funds.
-    """
     if from_bucket_id == to_bucket_id:
         raise BucketTransferError("Source and destination buckets must be different.")
 

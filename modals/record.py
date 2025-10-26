@@ -40,13 +40,10 @@ class RecordModal(InputModal):
         self.record_form = RecordForm()
         self.isEditing = isEditing
         if isEditing:
-            # Editing mode: remove hotkeys that don't make sense here
             self._bindings.key_to_bindings.clear()
             self.refresh_bindings()
         self.date = date
         self.shift_pressed = False  # used for "Submit & Template"
-
-    # ---------- Helpers ---------- #
 
     def _update_errors(self, errors: dict) -> None:
         # Clear previous error labels
@@ -57,8 +54,6 @@ class RecordModal(InputModal):
         for key, value in errors.items():
             field = self.query_one(f"#row-field-{key}")
             field.mount(Label(value, classes="error"))
-
-    # ---------- Autocomplete (Template apply) ---------- #
 
     def on_auto_complete_selected(self, event) -> None:
         """
@@ -72,7 +67,6 @@ class RecordModal(InputModal):
         if not template:
             return
 
-        # For each field (except label/date), update value or heldValue
         for field in self.form.fields[1:-1]:
             has_held_value = field.type in ["autocomplete"]
             field_widget = self.query_one(f"#field-{field.key}")
@@ -120,7 +114,6 @@ class RecordModal(InputModal):
     # ---------- View ---------- #
 
     def compose(self) -> ComposeResult:
-        # Just the form fields (no split section)
         yield ModalContainer(
             Fields(self.form),
             Container(id="no-splits-placeholder"),  # keeps layout stable; harmless
