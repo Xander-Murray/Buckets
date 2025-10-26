@@ -12,11 +12,11 @@ A fast, keyboard-friendly TUI for envelope-style budgeting. Track accounts, cate
 
 **Home Page**
 
-![Home page](screenshots/home.png)
+![Home page](./screenshots/home.png)
 
 **Buckets View**
 
-![Buckets page](screenshots/buckets.png)
+![Buckets page](./screenshots/buckets.png)
 
 ---
 
@@ -53,4 +53,3 @@ pip install -r requirements.txt
 ```bash
 python -m buckets
 ```
-
