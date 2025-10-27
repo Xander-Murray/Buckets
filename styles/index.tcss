@@ -25,27 +25,32 @@ Rule {
   color: $primary-background;
 }
 
+/* Buttons (single definition) */
 Button {
   width: auto;
   height: auto;
   background: transparent;
-  color: $text;
-  min-width: 0;
+  color: $foreground;
   border: none;
   text-style: none;
 
   &:focus {
-      text-style: bold reverse;
+    text-style: bold reverse;
   }
 
   &:hover {
-      background: $panel-darken-2;
-      color: $text;
+    background: $panel-darken-2;
+    color: $foreground;
   }
 
   &.-active {
-      background: $panel;
-      tint: $background 30%;
+    background: $panel;
+  }
+
+  &.selected {
+    color: $accent;
+    text-style: bold;
+    background: $surface;
   }
 }
 
@@ -59,6 +64,7 @@ Input {
   height: 1;
   background: $surface;
   border: none;
+
   &.-invalid {
     padding-left: 0;
     border-left: outer $error;
@@ -68,39 +74,24 @@ Input {
     background: $surface-lighten-1;
     padding-left: 0;
     border-left: outer $surface-lighten-2;
+
     &.-invalid {
       border-left: outer $error;
     }
 
     & .input--cursor {
-      color: $text;
+      color: $foreground;
       background: $accent;
       text-style: not reverse;
     }
-
-  }
-}
-
-Button {
-  width: 50%;
-  text-align: center;
-  color: $accent 50%;
-  
-  &.selected {
-    color: $accent;
-    text-style: bold;
-    background: $surface;
-  }
-  &:focus {
-    background: $accent 10%;
   }
 }
 
 Tabs {
   & .-active {
-      text-style: $block-cursor-text-style;
-      color: $block-cursor-foreground;
-      background: $block-cursor-background;
+    text-style: bold;
+    color: $foreground;
+    background: $accent;
   }
 }
 
@@ -113,20 +104,19 @@ Tabs {
   hatch: right $primary-background;
   content-align: center middle;
   height: 1fr;
-  max-height: 1fr;
   color: $primary-background-lighten-1;
 }
 
 .module-container {
   width: 1fr;
   border: round $panel-lighten-2;
-  padding-left: 1;  
+  padding-left: 1;
   padding-right: 1;
 
   &:focus {
     border: round $accent;
   }
-  
+
   &:focus-within {
     border: round $accent;
   }
@@ -160,18 +150,17 @@ Tabs {
     width: 15;
     margin-left: 2;
   }
-  
+
   .path {
     color: $primary-background-lighten-3;
     dock: right;
   }
-
 }
 
 .content {
   width: 1fr;
   height: 1fr;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 /* ---------------------------------- */
@@ -189,9 +178,6 @@ Tabs {
     color: $accent;
   }
 
-  Input {
-  }
-
   Label.error {
     color: $error;
     dock: right;
@@ -202,9 +188,8 @@ Tabs {
   }
 
   .autocomplete-container {
-    position: relative;
+    /* no 'position' prop in TCSS; rely on docking */
     .autocomplete-postfix-display-label {
-      position: absolute;
       dock: right;
     }
   }
@@ -212,34 +197,29 @@ Tabs {
   .switch-group {
     layout: horizontal;
 
-    .left {
-      dock: left;
-    }
-
-    .right {
-      dock: right;
-    }
+    .left { dock: left; }
+    .right { dock: right; }
 
     Switch {
       width: 1fr;
       margin: 0 2;
       padding: 0;
       border: none;
-  
+
       .switch--slider {
         color: $accent;
         background: $surface;
       }
-  
+
       &:focus > .switch--slider {
         color: $accent-lighten-1;
         background: $surface-lighten-2;
       }
-  
+
       .-on > .switch--slider {
         color: $accent;
       }
-  }
+    }
   }
 
   .field-autocomplete {
@@ -262,7 +242,7 @@ Tabs {
     height: 5;
     border: wide $accent;
     align-vertical: middle;
-  
+
     Label {
       color: white;
       width: 1fr;
@@ -278,9 +258,8 @@ Tabs {
 .textual-jump-label {
   layer: textual-jump;
   dock: top;
-  # background: $accent-lighten-2;
   text-style: bold;
-  color: $text;
+  color: $foreground;
   border: round $accent;
   padding: 0 1;
 }
@@ -291,9 +270,9 @@ Tabs {
   height: 1;
   width: 1fr;
   background: $accent;
-  color: $text;
+  color: $foreground;
   hatch: right $accent-darken-2;
-  
+
   & Label {
     width: auto;
     padding: 0 1;
@@ -304,9 +283,10 @@ Tabs {
   dock: bottom;
   height: 1;
   background: transparent;
-  color: $text-muted 42%;
+  color: $foreground 42%;
 }
 
 JumpOverlay {
   background: $background 50%;
 }
+

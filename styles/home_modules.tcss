@@ -7,7 +7,7 @@
     background: $background;
 
     &:focus {
-      background-tint: $background;
+      background: $background;
     }
 
     .account-container {
